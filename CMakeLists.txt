@@ -1,5 +1,12 @@
+##############################################################################
+# Convert CMake flags to compiler flags
 ###############################################################################
-# Top level CMakeList for building the EVT APM source code
+if(EVT_CORE_LOG_ENABLE)
+    add_compile_definitions(EVT_CORE_LOG_ENABLE)
+endif()
+
+###############################################################################
+# Top level CMakeList for building the EVT HUDL source code
 ###############################################################################
 cmake_minimum_required(VERSION 3.15)
 
@@ -32,7 +39,7 @@ add_library(${PROJECT_NAME} STATIC)
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/HUDL/main.cpp
+        src/HUDL/HUDL.cpp
         )
 
 ###############################################################################
