@@ -1,32 +1,45 @@
+#ifndef HUDL_INCLUDE_HUDL_HUDL_HPP
+#ifndef HUDL_INCLUDE_HUDL_HUDL_HPP
 
-
-
+#include <Canopen/co_core.h>
+#include <EVT/dev/lcd.hpp>
+#include <EVT/utils/log.hpp>
 
 namespace DEV = EVT::core::DEV;
+namespace log = EVT::core::log;
+namespace IO = EVT::core::IO;
 
 
+namespace HUDL {
 
 class HUDL {
 public: 
     
-    // default constructor for HUDL class
-    HUDL();
-  
-    // writes data to the LCD to show on the screen 
-    void data_write(unsigned char d);
+    /**
+    * Constructpr for the HUDL Class
+    */
+    HUDL(IO::Pin::GPIO& SI, IO::Pin::GPIO& SCK, IO::Pin::GPIO& CS ,IO::Pin::GPIO& REG_SEL, IO::Pin::GPIO& RESET);
+    
+    DisplayError();
 
-    // writes commands to the LCD to conrol the ST7565
-    void comm_write(unsigned char d);
+    AdjustDigipot();
 
-    // drives a single pixel on the LCD
-    void drive_pixel(unsigned char page, unsigned char col_up, unsigned char col_low, unsigned char data )
+    /**
+     * Get a pointer to the start of the CANopen object dictionary.
+     *
+     * @return Pointer to the start of the CANopen object dictionary.
+     */
+    CO_OBJ_T* getObjectDictionary();
 
-    // clears the LCD 
-    void ClearLCD(unsigned char *lcd_string);
-
-    // calls a set of commands to initialize LCD
-    void init_LCD();
-
-
-
+    /**
+     * Get the number of elements in the object dictionary.
+     *
+     * @return The number of elements in the object dictionary
+     */
+    uint16_t getObjectDictionarySize();
+    
 }
+
+}// namespace this class
+
+#endif // HUDL_INCLUDE_HUDL_HUDL_HPP

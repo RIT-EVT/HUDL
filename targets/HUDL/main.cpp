@@ -5,6 +5,7 @@
  */
 #include <stdint.h>
 
+#include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/I2C.hpp>
 #include <EVT/io/manager.hpp>
@@ -12,131 +13,102 @@
 #include <EVT/io/UART.hpp>
 #include <EVT/utils/time.hpp>
 
+#include <HUDL/HUDL.hpp>
+#include <HUDL/dev/LCD.hpp>
+
 namespace IO = EVT::core::IO;
+namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
-using namespace std;
+namespace log = EVT::core::log;
+
+// Global CAN Node reference
+CO_NODE canNode;
 
 constexpr uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
 constexpr uint8_t deviceCount = 1;
 
 IO::GPIO* devices[deviceCount];
 
-class HUDL {
-    int test;
-
-    public:
-        //IO::GPIO SCL;  // PB_13 (PA5 on F334)
-        //IO::GPIO SI;  // PB_15 (PA7 on F334)
-        IO::GPIO& reg_select; // PA_3
-        IO::GPIO& reset;  // PB_3
-        IO::GPIO& CS;  // PB_12
-
-        IO::SPI& spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, EVT::core::IO::Pin::PC_11>(devices, deviceCount);
-
-        HUDL();
-        void data_write(unsigned char d);
-        void comm_write(unsigned char d);
-        void drive_pixel(unsigned char page, unsigned char col_up, unsigned char col_low, unsigned char data );
-        void ClearLCD(unsigned char *lcd_string);
-        void init_LCD();
-
-};
-
-/*
-//HUDL default constructor
-HUDL::HUDL(int test) {
-    test = test;
-    cout << "testing class declaration...\n";
-    cout << test << "\n";
-}
-*/
-
-
-
-// command write function
-// @param: d : the data beign written for the command
-void HUDL::data_write(unsigned char d) //Data Output Serial Interface
-{
-    d = (uint8_t)d;
-    CS.writePin(EVT::core::IO::GPIO::State::LOW);
-    reg_select.writePin(EVT::core::IO::GPIO::State::HIGH);
-    spi.startTransmission(0);
-    spi.write(&d, 1);
-    spi.endTransmission(0);
-    CS.writePin(EVT::core::IO::GPIO::State::HIGH);
-}
-
-
-// command write function
-// @param: d : the data beign written for the command
-void HUDL::comm_write(unsigned char d) 
-{
-    d = (uint8_t)d;
-    CS.writePin(EVT::core::IO::GPIO::State::LOW);
-    reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
-    spi.startTransmission(0);
-    spi.write(&d, 1);
-    spi.endTransmission(0);
-    CS.writePin(EVT::core::IO::GPIO::State::HIGH);
-}
-
-
-// writes data to a single pixel
-// @param: page : the page address to write data to 
-// @param: col_up : the first four bits of the column write
-// @param: col_low : the last four bits of the column write
-// @param: data : the data value to write
-void HUDL::drive_pixel(unsigned char page, unsigned char col_up, unsigned char col_low, unsigned char data ) {
-    comm_write(0x40); //line to start writing on (0 -> 64) moves set bits with it DO NOT CHANGE 
-    comm_write(0xB0+ page); //writes the page address (4 bits, 8 rows selcted by values 0-7 ) 
-    comm_write(0x10 + col_up); //writes the first 4 bits of the column select (out of 8 bits)
-    comm_write(0x00 + col_low); //writes the second 4 bits of the column select (out)
-
-    data_write(data); //writes 8 vertical bits based on value between 0-255 based on bits set ex: 01001100 is       |WHITE|
-                      //                                                                                            |BLACK|
-                      //                                                                                            |WHITE|
-                      //                                                                                            |WHITE|
-                      //                                                                                            |BLACK|
-                      //                                                                                            |BLACK|
-                      //                                                                                            |WHITE|
-                      //                                                                                            |WHITE|             
-  }
-
-
-// clears the LCD screen
-// @param: lcd_string : 
-void HUDL::ClearLCD(unsigned char *lcd_string)
-{
-    unsigned int i,j;
-    unsigned char page = 0xB0;
-    comm_write(0xAE);          //Display OFF
-    comm_write(0x40);         //Display start address + 0x40
-    for(i=0;i<8;i++){       //64 pixel display / 8 pixels per page = 8 pages
-        comm_write(page);       //send page address
-        comm_write(0x10);       //column address upper 4 bits + 0x10
-        comm_write(0x00);       //column address lower 4 bits + 0x00
-    for(j=0;j<128;j++){     //128 columns wide
-        data_write(0x00);    //write clear pixels
-        lcd_string++; 
+void handleNMT(IO::CANMessage& message) {
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Network Management message recognized.");
+    uint8_t* payload = message.getPayload();
+    uint8_t targetID = payload[1];
+    if (targetID == TMS::TMS::NODE_ID || targetID == 0x00) {
+        CO_MODE mode;
+        switch (payload[0]) {
+        case 0x01:
+            mode = CO_OPERATIONAL;
+            break;
+        case 0x80:
+            mode = CO_PREOP;
+            break;
+        default:
+            mode = CO_INVALID;
         }
-        page++;         //after 128 columns, go to next page
-        }
-    comm_write(0xAF);   
+        if (canNode.Nmt.Mode != mode)
+            CONmtSetMode(&canNode.Nmt, mode);
+    }
+}
+
+/**
+ * Interrupt handler for incoming CAN messages.
+ *
+ * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
+ */
+void canInterruptHandler(IO::CANMessage& message, void* priv) {
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "CAN Message received.");
+
+    // Handle NMT messages
+    if (message.getId() == 0) {
+        handleNMT(message);
+        return;
+    }
+
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
+        (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
+    if (queue == nullptr)
+        return;
+    if (!message.isCANExtended())
+        queue->append(message);
 }
 
 
-// initializes LCD for use
-void HUDL::init_LCD()  {
-    comm_write(0xA0);   // ADC select 
-    comm_write(0xAE);   // Display OFF
-    comm_write(0xC8);   // COM direction scan 
-    comm_write(0xA2);   // LCD bias set
-    comm_write(0x2F);   // Power Control set
-    comm_write(0x26);   // Resistor Ratio Set 
-    comm_write(0x81);   // Electronic Volume Command (set contrast) Double Btye: 1 of 2
-    comm_write(0x11);   // Electronic Volume value (contrast value) Double Byte: 2 of 2
-    comm_write(0xAF);   // Display ON
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// CANopen specific Callbacks. Need to be defined in some location
+///////////////////////////////////////////////////////////////////////////////
+extern "C" void CONodeFatalError(void) {
+    log::LOGGER.log(log::Logger::LogLevel::ERROR, "Fatal CANopen error");
 }
+
+extern "C" void COIfCanReceive(CO_IF_FRM* frm) {}
+
+extern "C" int16_t COLssStore(uint32_t baudrate, uint8_t nodeId) { return 0; }
+
+extern "C" int16_t COLssLoad(uint32_t* baudrate, uint8_t* nodeId) { return 0; }
+
+extern "C" void CONmtModeChange(CO_NMT* nmt, CO_MODE mode) {
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Network Management state changed.");
+}
+
+extern "C" void CONmtHbConsEvent(CO_NMT* nmt, uint8_t nodeId) {}
+
+extern "C" void CONmtHbConsChange(CO_NMT* nmt, uint8_t nodeId, CO_MODE mode) {}
+
+extern "C" int16_t COParaDefault(CO_PARA* pg) { return 0; }
+
+extern "C" void COPdoTransmit(CO_IF_FRM* frm) {}
+
+extern "C" int16_t COPdoReceive(CO_IF_FRM* frm) { return 0; }
+
+extern "C" void COPdoSyncUpdate(CO_RPDO* pdo) {}
+
+extern "C" void COTmrLock(void) {}
+
+extern "C" void COTmrUnlock(void) {}
 
 
 
