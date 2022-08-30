@@ -1,8 +1,13 @@
 namespace DEV = EVT::core::DEV;
+namespace IO = EVT::core::IO;
 
 namespace HUDL {
     class HUDL {
     public:
+        IO::GPIO &reg_select; // PA_3
+        IO::GPIO &reset;      // PB_3
+        IO::GPIO &CS;         // PB_12
+
         // default constructor for HUDL class
         HUDL();
 
@@ -21,5 +26,9 @@ namespace HUDL {
 
         // calls a set of commands to initialize LCD
         void init_LCD();
+
+
+
+
     };
 }
