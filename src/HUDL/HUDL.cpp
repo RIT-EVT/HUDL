@@ -28,7 +28,7 @@ namespace HUDL {
         IO::GPIO &reg_select; // PA_3
         IO::GPIO &reset;      // PB_3
         IO::GPIO &cs;         // PB_12
-
+        IO::SPI &spi;
 
 
         HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi) : reg_select(reg_select), reset(reset),
@@ -48,10 +48,9 @@ namespace HUDL {
     };
 
 // command write function
-// @param: d : the data beign written for the command
+// @param: d : the data being written for the command
     void HUDL::data_write(unsigned char d) // Data Output Serial Interface
     {
-        d = (uint8_t) d;
         cs.writePin(EVT::core::IO::GPIO::State::LOW);
         reg_select.writePin(EVT::core::IO::GPIO::State::HIGH);
         spi.startTransmission(0);
@@ -63,7 +62,6 @@ namespace HUDL {
 // command write function
 // @param: d : the data beign written for the command
     void HUDL::comm_write(unsigned char d) {
-        d = (uint8_t) d;
         cs.writePin(EVT::core::IO::GPIO::State::LOW);
         reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
         spi.startTransmission(0);
@@ -105,15 +103,14 @@ namespace HUDL {
 // clears the LCD screen
 // @param: lcd_string :
     void HUDL::ClearLCD(unsigned char *lcd_string) {
-        unsigned int i, j;
         unsigned char page = 0xB0;
         comm_write(0xAE);         // Display OFF
         comm_write(0x40);         // Display start address + 0x40
-        for (i = 0; i < 8; i++) { // 64 pixel display / 8 pixels per page = 8 pages
+        for (int i = 0; i < 8; i++) { // 64 pixel display / 8 pixels per page = 8 pages
             comm_write(page);       // send page address
             comm_write(0x10);       // column address upper 4 bits + 0x10
             comm_write(0x00);       // column address lower 4 bits + 0x00
-            for (j = 0; j < 128; j++) { // 128 columns wide
+            for (int j = 0; j < 128; j++) { // 128 columns wide
                 data_write(0x00);         // write clear pixels
                 lcd_string++;
             }
@@ -138,30 +135,32 @@ namespace HUDL {
     }
 
     int main() {
-
-        HUDL board;
         // register select set
-        board.reg_select =
+        auto &reg_select =
                 IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
-        board.reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
+        reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
 
         // reset set
-        board.reset =
+        auto &reset =
                 IO::getGPIO<IO::Pin::PB_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
 
         // reset the board
-        board.reset.writePin(EVT::core::IO::GPIO::State::LOW);
+        reset.writePin(EVT::core::IO::GPIO::State::LOW);
         time::wait(100);
-        board.reset.writePin(EVT::core::IO::GPIO::State::HIGH);
+        reset.writePin(EVT::core::IO::GPIO::State::HIGH);
         time::wait(100);
 
         // cs
-        board.cs =
+        auto &cs =
                 IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
-        board.cs.writePin(EVT::core::IO::GPIO::State::HIGH);
+        cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 
         // Setup spi
-        board.spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
+        auto &spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, IO::Pin::PC_11>(devices, deviceCount);
+        spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
+
+        HUDL board = HUDL(reg_select, reset, cs, spi);
+
 
         // Setup UART
         IO::UART &uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
