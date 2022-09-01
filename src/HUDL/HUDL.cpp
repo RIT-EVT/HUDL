@@ -11,10 +11,6 @@
 
 namespace IO = EVT::core::IO;
 
-constexpr uint32_t SPI_SPEED = SPI_SPEED_4MHZ; // 4MHz
-constexpr uint8_t deviceCount = 1;
-
-
 namespace HUDL {
     class HUDL {
     public:
