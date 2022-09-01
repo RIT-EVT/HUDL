@@ -3,10 +3,9 @@
  * basic echo functionality where the uart will write back whatever the user
  * enters.
  */
-#include <stdint.h>
 
-#include <EVT/io/GPIO.hpp>
-#include <EVT/io/manager.hpp>
+#include "EVT/io/GPIO.hpp"
+#include "EVT/io/SPI.hpp"
 
 
 namespace IO = EVT::core::IO;
