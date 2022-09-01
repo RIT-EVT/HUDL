@@ -27,7 +27,7 @@ namespace HUDL {
         // IO::GPIO SI;  // PB_15 (PA7 on F334)
         IO::GPIO &reg_select; // PA_3
         IO::GPIO &reset;      // PB_3
-        IO::GPIO &CS;         // PB_12
+        IO::GPIO &cs;         // PB_12
 
         IO::SPI &spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15,
                 EVT::core::IO::Pin::PC_11>(devices, deviceCount);
@@ -51,24 +51,24 @@ namespace HUDL {
     void HUDL::data_write(unsigned char d) // Data Output Serial Interface
     {
         d = (uint8_t) d;
-        CS.writePin(EVT::core::IO::GPIO::State::LOW);
+        cs.writePin(EVT::core::IO::GPIO::State::LOW);
         reg_select.writePin(EVT::core::IO::GPIO::State::HIGH);
         spi.startTransmission(0);
         spi.write(&d, 1);
         spi.endTransmission(0);
-        CS.writePin(EVT::core::IO::GPIO::State::HIGH);
+        cs.writePin(EVT::core::IO::GPIO::State::HIGH);
     }
 
 // command write function
 // @param: d : the data beign written for the command
     void HUDL::comm_write(unsigned char d) {
         d = (uint8_t) d;
-        CS.writePin(EVT::core::IO::GPIO::State::LOW);
+        cs.writePin(EVT::core::IO::GPIO::State::LOW);
         reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
         spi.startTransmission(0);
         spi.write(&d, 1);
         spi.endTransmission(0);
-        CS.writePin(EVT::core::IO::GPIO::State::HIGH);
+        cs.writePin(EVT::core::IO::GPIO::State::HIGH);
     }
 
 // writes data to a single pixel
@@ -154,10 +154,10 @@ namespace HUDL {
         board.reset.writePin(EVT::core::IO::GPIO::State::HIGH);
         time::wait(100);
 
-        // CS
-        board.CS =
+        // cs
+        board.cs =
                 IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
-        board.CS.writePin(EVT::core::IO::GPIO::State::HIGH);
+        board.cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 
         // Setup spi
         board.spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);

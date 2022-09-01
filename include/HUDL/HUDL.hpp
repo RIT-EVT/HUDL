@@ -1,4 +1,3 @@
-namespace DEV = EVT::core::DEV;
 namespace IO = EVT::core::IO;
 
 namespace HUDL {
@@ -6,10 +5,13 @@ namespace HUDL {
     public:
         IO::GPIO &reg_select; // PA_3
         IO::GPIO &reset;      // PB_3
-        IO::GPIO &CS;         // PB_12
+        IO::GPIO &cs;         // PB_12
+        IO::SPI &spi;
 
         // default constructor for HUDL class
-        HUDL();
+        HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi) : reg_select(reg_select), reset(reset),
+                                                                                  cs(cs), spi(spi) {
+        }
 
         // writes data to the LCD to show on the screen
         void data_write(unsigned char d);
@@ -26,8 +28,6 @@ namespace HUDL {
 
         // calls a set of commands to initialize LCD
         void init_LCD();
-
-
 
 
     };

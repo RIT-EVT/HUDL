@@ -23,8 +23,6 @@ constexpr uint8_t deviceCount = 1;
 IO::GPIO *devices[deviceCount];
 
 
-
-
 int main() {
 
     // HUDL board = new HUDL();
@@ -44,10 +42,10 @@ int main() {
     board.reset.writePin(EVT::core::IO::GPIO::State::HIGH);
     time::wait(100);
 
-    // CS
-    board.CS =
+    // cs
+    board.cs =
             IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
-    board.CS.writePin(EVT::core::IO::GPIO::State::HIGH);
+    board.cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 
     // Setup spi
     board.spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
