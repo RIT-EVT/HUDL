@@ -10,8 +10,7 @@ namespace HUDL {
 
         // default constructor for HUDL class
         HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi) : reg_select(reg_select), reset(reset),
-                                                                                  cs(cs) {
-            this->spi =
+                                                                                  cs(cs), spi(spi) {
         }
 
         // writes data to the LCD to show on the screen

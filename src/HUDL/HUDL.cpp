@@ -159,7 +159,7 @@ namespace HUDL {
         auto &spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, IO::Pin::PC_11>(devices, deviceCount);
         spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
 
-        HUDL board = HUDL(reg_select, reset, cs, spi);
+        auto board = HUDL(reg_select, reset, cs, spi);
 
 
         // Setup UART
