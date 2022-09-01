@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 #include <EVT/io/GPIO.hpp>
-#include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>

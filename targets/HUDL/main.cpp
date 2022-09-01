@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 #include <EVT/io/GPIO.hpp>
-#include <EVT/io/I2C.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
@@ -36,10 +35,10 @@ int main() {
     auto &cs = IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
     cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 
-    auto &spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, IO::Pin::PC_11>(devices, deviceCount);
-    spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
+    auto &hudl_spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, IO::Pin::PC_11>(devices, deviceCount);
+    hudl_spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
 
-    auto board = HUDL::HUDL(reg_select, reset, cs, spi);
+    auto board = HUDL::HUDL(reg_select, reset, cs, hudl_spi);
 
 
     // Setup UART
