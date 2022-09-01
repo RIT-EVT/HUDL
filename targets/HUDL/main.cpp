@@ -24,31 +24,23 @@ IO::GPIO *devices[deviceCount];
 
 
 int main() {
+    auto &reg_select = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    reg_select.writePin(IO::GPIO::State::LOW);
 
-    // HUDL board = new HUDL();
-    auto board = HUDL::HUDL();
-    // register select set
-    board.reg_select =
-            IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
-    board.reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
-
-    // reset set
-    board.reset =
-            IO::getGPIO<IO::Pin::PB_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
-
-    // reset the board
-    board.reset.writePin(EVT::core::IO::GPIO::State::LOW);
+    auto &reset = IO::getGPIO<IO::Pin::PB_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    reset.writePin(EVT::core::IO::GPIO::State::LOW);
     time::wait(100);
-    board.reset.writePin(EVT::core::IO::GPIO::State::HIGH);
+    reset.writePin(EVT::core::IO::GPIO::State::HIGH);
     time::wait(100);
 
-    // cs
-    board.cs =
-            IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
-    board.cs.writePin(EVT::core::IO::GPIO::State::HIGH);
+    auto &cs = IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 
-    // Setup spi
-    board.spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
+    auto &spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, IO::Pin::PC_11>(devices, deviceCount);
+    spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
+
+    auto board = HUDL::HUDL(reg_select, reset, cs, spi);
+
 
     // Setup UART
     IO::UART &uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);

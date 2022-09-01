@@ -29,10 +29,11 @@ namespace HUDL {
         IO::GPIO &reset;      // PB_3
         IO::GPIO &cs;         // PB_12
 
-        IO::SPI &spi = IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15,
-                EVT::core::IO::Pin::PC_11>(devices, deviceCount);
 
-        HUDL();
+
+        HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi) : reg_select(reg_select), reset(reset),
+                                                                                  cs(cs), spi(spi) {
+        }
 
         void data_write(unsigned char d);
 
