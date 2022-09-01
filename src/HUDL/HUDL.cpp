@@ -18,7 +18,6 @@ namespace time = EVT::core::time;
 constexpr uint32_t SPI_SPEED = SPI_SPEED_4MHZ; // 4MHz
 constexpr uint8_t deviceCount = 1;
 
-IO::GPIO *devices[deviceCount];
 
 namespace HUDL {
     class HUDL {
@@ -135,6 +134,8 @@ namespace HUDL {
     }
 
     int main() {
+        IO::GPIO *devices[deviceCount];
+
         // register select set
         auto &reg_select =
                 IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);

@@ -17,13 +17,13 @@ namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
 using namespace std;
 
-constexpr uint32_t SPI_SPEED = SPI_SPEED_4MHZ; // 4MHz
-constexpr uint8_t deviceCount = 1;
+const uint32_t SPI_SPEED = SPI_SPEED_4MHZ; // 4MHz
+const uint8_t deviceCount = 1;
 
-IO::GPIO *devices[deviceCount];
 
 
 int main() {
+    IO::GPIO *devices[deviceCount];
     auto &reg_select = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
     reg_select.writePin(IO::GPIO::State::LOW);
 
