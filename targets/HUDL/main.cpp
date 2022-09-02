@@ -58,7 +58,7 @@ int main() {
     board.init_LCD();
 
     // Clear LCD Screen
-    // ClearLCD();
+    // clear_lcd();
 
     board.drive_pixel(1, 1, 1, 255);
     time::wait(10000);

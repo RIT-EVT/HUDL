@@ -29,7 +29,7 @@ public:
   void drive_pixel(unsigned char page, unsigned char col_up,
                    unsigned char col_low, unsigned char data);
 
-  void ClearLCD(unsigned char *lcd_string);
+  void clear_lcd(unsigned char *lcd_string);
 
   void init_LCD();
 };
@@ -89,7 +89,7 @@ void HUDL::drive_pixel(unsigned char page, unsigned char col_up,
 
 // clears the LCD screen
 // @param: lcd_string :
-void HUDL::ClearLCD(unsigned char *lcd_string) {
+void HUDL::clear_lcd(unsigned char *lcd_string) {
   unsigned char page = 0xB0;
   comm_write(0xAE); // Display OFF
   comm_write(0x40); // Display start address + 0x40

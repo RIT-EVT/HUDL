@@ -23,7 +23,7 @@ public:
                    unsigned char col_low, unsigned char data);
 
   // clears the LCD
-  void ClearLCD(unsigned char *lcd_string);
+  void clear_lcd(unsigned char *lcd_string);
 
   // calls a set of commands to initialize LCD
   void init_LCD();
