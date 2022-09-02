@@ -47,7 +47,7 @@ void HUDL::data_write(unsigned char d) // Data Output Serial Interface
 }
 
 // command write function
-// @param: d : the data beign written for the command
+// @param: d : the data being written for the command
 void HUDL::comm_write(unsigned char d) {
   cs.writePin(EVT::core::IO::GPIO::State::LOW);
   reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
