@@ -68,7 +68,7 @@ void HUDL::drive_pixel(unsigned char page, unsigned char col_up,
   // DO NOT CHANGE
   comm_write(
       0xB0 +
-      page); // writes the page address (4 bits, 8 rows selcted by values 0-7 )
+      page); // writes the page address (4 bits, 8 rows selected by values 0-7 )
   comm_write(
       0x10 +
       col_up); // writes the first 4 bits of the column select (out of 8 bits)
@@ -115,7 +115,7 @@ void HUDL::init_LCD() {
   comm_write(0x2F); // Power Control set
   comm_write(0x26); // Resistor Ratio Set
   comm_write(
-      0x81); // Electronic Volume Command (set contrast) Double Btye: 1 of 2
+      0x81); // Electronic Volume Command (set contrast) Double Byte: 1 of 2
   comm_write(
       0x11); // Electronic Volume value (contrast value) Double Byte: 2 of 2
   comm_write(0xAF); // Display ON
