@@ -35,7 +35,7 @@ public:
 };
 
 /**
- *
+ * Write data
  * @param data
  */
 void HUDL::data_write(unsigned char data)  {
@@ -48,7 +48,7 @@ void HUDL::data_write(unsigned char data)  {
 }
 
 /**
- *
+ * Write command
  * @param data is the data being written for the command
  */
 void HUDL::comm_write(unsigned char data) {
