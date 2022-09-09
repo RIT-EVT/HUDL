@@ -12,10 +12,13 @@ public:
   HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi)
       : reg_select(reg_select), reset(reset), cs(cs), spi(spi) {}
 
-  // writes data to the LCD to show on the screen
+    /**
+   * Writes data to the LCD to show on the screen
+   * @param data
+   */
   void data_write(unsigned char data);
 
-  // writes commands to the LCD to conrol the ST7565
+  // writes commands to the LCD to control the ST7565
   void comm_write(unsigned char data);
 
   // drives a single pixel on the LCD
