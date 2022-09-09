@@ -13,10 +13,10 @@ public:
       : reg_select(reg_select), reset(reset), cs(cs), spi(spi) {}
 
   // writes data to the LCD to show on the screen
-  void data_write(unsigned char d);
+  void data_write(unsigned char data);
 
   // writes commands to the LCD to conrol the ST7565
-  void comm_write(unsigned char d);
+  void comm_write(unsigned char data);
 
   // drives a single pixel on the LCD
   void drive_pixel(unsigned char page, unsigned char col_up,
