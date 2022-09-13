@@ -4,9 +4,11 @@
  * enters.
  */
 
+// clang-format off
 #include "EVT/io/GPIO.hpp"
 #include "EVT/io/SPI.hpp"
 #include "HUDL/HUDL.hpp"
+// clang-format on
 
 namespace IO = EVT::core::IO;
 
