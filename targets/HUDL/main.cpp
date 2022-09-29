@@ -63,7 +63,7 @@ int main() {
     board.drive_pixel(1, 1, 1, 255);
     time::wait(10000);
 
-    // echos command back
+    // echoes command back
     uart.printf("\n\recho: %s\n\r", buf);
   }
 }
