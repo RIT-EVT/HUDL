@@ -1,6 +1,9 @@
 ###############################################################################
 # Top level CMakeList for building the EVT HUDL source code
 ###############################################################################
+if(EVT_CORE_LOG_ENABLE)
+    add_compile_definitions(EVT_CORE_LOG_ENABLE)
+endif()
 cmake_minimum_required(VERSION 3.15)
 
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
