@@ -11,7 +11,13 @@ public:
   IO::GPIO &cs;         // PB_12
   IO::SPI &spi;
 
-  // default constructor for HUDL class
+  /**
+   * Default Constructor for the HUDL class
+   * @param reg_select is the register select pin
+   * @param reset is the reset pin
+   * @param cs is the chip select pin
+   * @param spi is the SPI instance
+   */
   HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi);
 
     /**
