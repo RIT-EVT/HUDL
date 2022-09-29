@@ -12,11 +12,11 @@
 namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
 
-constexpr uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
-constexpr uint8_t deviceCount = 1;
+const uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
+const uint8_t deviceCount = 1;
 
 int main() {
-    IO::GPIO* devices[deviceCount];
+    IO::GPIO& devices[deviceCount];
 
     // register select set
     auto& reg_select =
