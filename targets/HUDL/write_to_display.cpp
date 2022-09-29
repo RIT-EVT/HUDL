@@ -1,6 +1,7 @@
-//
-// Created by aaron on 9/1/22.
-//
+/**
+ * Sample code for writing a pixel to the display and
+ * echoing user input
+ */
 
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/manager.hpp>
