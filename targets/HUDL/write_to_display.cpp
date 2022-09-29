@@ -32,7 +32,7 @@ int main() {
   reset.writePin(EVT::core::IO::GPIO::State::HIGH);
   time::wait(100);
 
-  // cs
+  // set chip select pin
   auto &cs =
       IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
   cs.writePin(EVT::core::IO::GPIO::State::HIGH);
