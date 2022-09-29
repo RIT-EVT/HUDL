@@ -16,10 +16,7 @@ namespace HUDL {
 HUDL::HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi)
     : reg_select(reg_select), reset(reset), cs(cs), spi(spi) {}
 
-/**
- * Writes data to the LCD to show on the screen
- * @param data
- */
+
 void HUDL::data_write(unsigned char data) {
   cs.writePin(EVT::core::IO::GPIO::State::LOW);
   reg_select.writePin(EVT::core::IO::GPIO::State::HIGH);
@@ -29,10 +26,7 @@ void HUDL::data_write(unsigned char data) {
   cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 }
 
-/**
- * Writes commands to the LCD to control the ST7565
- * @param data is the data being written for the command
- */
+
 void HUDL::comm_write(unsigned char data) {
   cs.writePin(EVT::core::IO::GPIO::State::LOW);
   reg_select.writePin(EVT::core::IO::GPIO::State::LOW);
@@ -42,13 +36,7 @@ void HUDL::comm_write(unsigned char data) {
   cs.writePin(EVT::core::IO::GPIO::State::HIGH);
 }
 
-/**
- * Writes data to a single pixel
- * @param page is the page address to write data to
- * @param col_up is the first four bits of the column write
- * @param col_low is the last four bits of the column write
- * @param data is the data value to write
- */
+
 void HUDL::drive_pixel(unsigned char page, unsigned char col_up,
                        unsigned char col_low, unsigned char data) {
   HUDL::comm_write(
@@ -74,10 +62,7 @@ void HUDL::drive_pixel(unsigned char page, unsigned char col_up,
                     //  |WHITE|
 }
 
-/**
- * Clears the screen
- * @param lcd_string
- */
+
 void HUDL::clear_lcd(unsigned char *lcd_string) {
   unsigned char page = 0xB0;
   comm_write(0xAE); // Display OFF
@@ -101,9 +86,7 @@ void HUDL::clear_lcd(unsigned char *lcd_string) {
   comm_write(0xAF);
 }
 
-/**
- * Initializes LCD for use
- */
+
 void HUDL::init_LCD() {
   HUDL::comm_write(0xA0); // ADC select
   HUDL::comm_write(0xAE); // Display OFF

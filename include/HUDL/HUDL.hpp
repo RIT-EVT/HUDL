@@ -14,23 +14,37 @@ public:
   // default constructor for HUDL class
   HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi);
 
-  /**
+    /**
    * Writes data to the LCD to show on the screen
-   * @param data
+   * @param data being written to LCD
    */
   void data_write(unsigned char data);
 
-  // writes commands to the LCD to control the ST7565
+    /**
+   * Writes commands to the LCD to control the ST7565
+   * @param data being written for the command
+   */
   void comm_write(unsigned char data);
 
-  // drives a single pixel on the LCD
+    /**
+   * Writes data to a single pixel
+   * @param page is the page address to write data to
+   * @param col_up is the first four bits of the column write
+   * @param col_low is the last four bits of the column write
+   * @param data is the data value to write
+   */
   void drive_pixel(unsigned char page, unsigned char col_up,
                    unsigned char col_low, unsigned char data);
 
-  // clears the LCD
+    /**
+   * Clears the screen
+   * @param lcd_string
+   */
   void clear_lcd(unsigned char *lcd_string);
 
-  // calls a set of commands to initialize LCD
+    /**
+    * Initializes LCD for use
+    */
   void init_LCD();
 };
 } // namespace HUDL
