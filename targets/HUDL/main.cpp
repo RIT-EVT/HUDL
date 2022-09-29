@@ -16,50 +16,50 @@ namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
 using namespace std;
 
-const uint32_t SPI_SPEED = SPI_SPEED_4MHZ; // 4MHz
+const uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
 const uint8_t deviceCount = 1;
 
 int main() {
-  IO::GPIO *devices[deviceCount];
-  auto &reg_select = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::OUTPUT);
-  reg_select.writePin(IO::GPIO::State::LOW);
+    IO::GPIO* devices[deviceCount];
+    auto& reg_select = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::OUTPUT);
+    reg_select.writePin(IO::GPIO::State::LOW);
 
-  auto &reset = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
-  reset.writePin(IO::GPIO::State::LOW);
-  time::wait(100);
-  reset.writePin(IO::GPIO::State::HIGH);
-  time::wait(100);
+    auto& reset = IO::getGPIO<IO::Pin::PB_3>(IO::GPIO::Direction::OUTPUT);
+    reset.writePin(IO::GPIO::State::LOW);
+    time::wait(100);
+    reset.writePin(IO::GPIO::State::HIGH);
+    time::wait(100);
 
-  auto &cs = IO::getGPIO<IO::Pin::PB_12>(IO::GPIO::Direction::OUTPUT);
-  cs.writePin(IO::GPIO::State::HIGH);
+    auto& cs = IO::getGPIO<IO::Pin::PB_12>(IO::GPIO::Direction::OUTPUT);
+    cs.writePin(IO::GPIO::State::HIGH);
 
-  auto &hudl_spi = IO::getSPI<IO::Pin::PB_13, IO::Pin::PB_15, IO::Pin::PC_11>(
-      devices, deviceCount);
-  hudl_spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
+    auto& hudl_spi = IO::getSPI<IO::Pin::PB_13, IO::Pin::PB_15, IO::Pin::PC_11>(
+        devices, deviceCount);
+    hudl_spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
 
-  auto board = HUDL::HUDL(reg_select, reset, cs, hudl_spi);
+    auto board = HUDL::HUDL(reg_select, reset, cs, hudl_spi);
 
-  // Setup UART
-  IO::UART &uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    // Setup UART
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
-  // String to store user input
-  char buf[100];
+    // String to store user input
+    char buf[100];
 
-  while (1) {
-    // Read user input
-    uart.printf("Enter message: ");
-    uart.gets(buf, 100);
+    while (1) {
+        // Read user input
+        uart.printf("Enter message: ");
+        uart.gets(buf, 100);
 
-    // Initialized LCD
-    board.init_LCD();
+        // Initialized LCD
+        board.init_LCD();
 
-    // Clear LCD Screen
-    // clear_lcd();
+        // Clear LCD Screen
+        // clear_lcd();
 
-    board.drive_pixel(1, 1, 1, 255);
-    time::wait(10000);
+        board.drive_pixel(1, 1, 1, 255);
+        time::wait(10000);
 
-    // echoes command back
-    uart.printf("\n\recho: %s\n\r", buf);
-  }
+        // echoes command back
+        uart.printf("\n\recho: %s\n\r", buf);
+    }
 }
