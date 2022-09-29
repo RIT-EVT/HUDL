@@ -12,12 +12,12 @@ public:
     IO::SPI& spi;
 
     /**
-   * Default Constructor for the HUDL class
-   * @param reg_select is the register select pin
-   * @param reset is the reset pin
-   * @param cs is the chip select pin
-   * @param spi is the SPI instance
-   */
+    * Default Constructor for the HUDL class
+    * @param reg_select is the register select pin
+    * @param reset is the reset pin
+    * @param cs is the chip select pin
+    * @param spi is the SPI instance
+    */
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi);
 
     /**
@@ -27,30 +27,30 @@ public:
     void data_write(unsigned char data);
 
     /**
-   * Writes commands to the LCD to control the ST7565
-   * @param data being written for the command
-   */
+    * Writes commands to the LCD to control the ST7565
+    * @param data being written for the command
+    */
     void comm_write(unsigned char data);
 
     /**
-   * Writes data to a single pixel
-   * @param page is the page address to write data to
-   * @param col_up is the first four bits of the column write
-   * @param col_low is the last four bits of the column write
-   * @param data is the data value to write
-   */
+    * Writes data to a single pixel
+    * @param page is the page address to write data to
+    * @param col_up is the first four bits of the column write
+    * @param col_low is the last four bits of the column write
+    * @param data is the data value to write
+    */
     void drive_pixel(unsigned char page, unsigned char col_up,
                      unsigned char col_low, unsigned char data);
 
     /**
-   * Clears the screen
-   * @param lcd_string
-   */
+    * Clears the screen
+    * @param lcd_string
+    */
     void clear_lcd(unsigned char* lcd_string);
 
     /**
-    * Initializes LCD for use
-    */
+     * Initializes LCD for use
+     */
     void init_LCD();
 };
 }// namespace HUDL
