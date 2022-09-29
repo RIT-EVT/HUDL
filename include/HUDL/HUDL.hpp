@@ -6,11 +6,6 @@ namespace IO = EVT::core::IO;
 namespace HUDL {
 class HUDL {
 public:
-    IO::GPIO& reg_select;// PA_3
-    IO::GPIO& reset;     // PB_3
-    IO::GPIO& cs;        // PB_12
-    IO::SPI& spi;
-
     /**
     * Default Constructor for the HUDL class
     * @param reg_select is the register select pin
@@ -52,6 +47,12 @@ public:
      * Initializes LCD for use
      */
     void init_LCD();
+
+private:
+    IO::GPIO& reg_select;// PA_3
+    IO::GPIO& reset;     // PB_3
+    IO::GPIO& cs;        // PB_12
+    IO::SPI& spi;
 };
 }// namespace HUDL
 
