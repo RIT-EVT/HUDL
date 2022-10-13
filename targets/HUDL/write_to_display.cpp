@@ -13,10 +13,10 @@ namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
 
 const uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
-const uint8_t deviceCount = 1;
+const unit8_t DEVICE_COUNT = 1;
 
 int main() {
-    IO::GPIO* devices[deviceCount];
+    IO::GPIO* devices[DEVICE_COUNT];
 
     // register select set
     auto& reg_select =
@@ -41,7 +41,7 @@ int main() {
     // Setup spi
     auto& spi =
         IO::getSPI<IO::Pin::PB_13, EVT::core::IO::Pin::PB_15, IO::Pin::PC_11>(
-            devices, deviceCount);
+            devices, DEVICE_COUNT);
     spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
 
     auto board = HUDL::HUDL(reg_select, reset, cs, spi);
