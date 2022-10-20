@@ -13,7 +13,7 @@ namespace IO = EVT::core::IO;
 namespace time = EVT::core::time;
 
 const uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
-const unit8_t DEVICE_COUNT = 1;
+const uint8_t DEVICE_COUNT = 1;
 
 int main() {
     IO::GPIO* devices[DEVICE_COUNT];
