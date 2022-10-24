@@ -8,6 +8,7 @@ class HUDL {
 public:
     /**
     * Default Constructor for the HUDL class
+     *
     * @param[in] reg_select is the register select pin
     * @param[in] reset is the reset pin
     * @param[in] cs is the chip select pin
@@ -17,12 +18,14 @@ public:
 
     /**
    * Writes data to the LCD to show on the screen
+     *
    * @param[in] data being written to LCD
    */
     void data_write(unsigned char data);
 
     /**
     * Writes commands to the LCD to control the ST7565
+     *
     * @param data being written for the command
     */
     void comm_write(unsigned char data);
@@ -40,6 +43,7 @@ public:
 
     /**
     * Clears the screen
+     *
     * @param[in] lcd_string
     */
     void clear_lcd(unsigned char* lcd_string);
