@@ -5,15 +5,39 @@
  */
 
 // clang-format off
+#include "EVT/dev/LCD.hpp"
 #include "EVT/io/GPIO.hpp"
 #include "EVT/io/SPI.hpp"
 #include "HUDL/HUDL.hpp"
 // clang-format on
 
 namespace IO = EVT::core::IO;
-namespace HUDL {
-HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi)
-    : reg_select(reg_select), reset(reset), cs(cs), spi(spi) {}
 
+namespace HUDL {
+    HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {
+
+
+    }
+
+    void HUDL::dataWrite(uint8_t data) {
+        lcd.dataWrite(data);
+
+    }
+
+    void HUDL::commWrite(uint8_t data) {
+        lcd.commandWrite(data);
+    }
+
+    void HUDL::drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data) {
+        lcd.drivePixel(page, colUp, colLow, data);
+    }
+
+    void HUDL::clearLCD(const uint8_t* bitmap) {
+        lcd.clearLCD(bitmap);
+    }
+
+    void HUDL::initLCD() {
+        lcd.initLCD();
+    }
 
 }// namespace HUDL
