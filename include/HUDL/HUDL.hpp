@@ -8,16 +8,16 @@ class HUDL {
 public:
     /**
     * Default Constructor for the HUDL class
-    * @param reg_select is the register select pin
-    * @param reset is the reset pin
-    * @param cs is the chip select pin
-    * @param spi is the SPI instance
+    * @param[in] reg_select is the register select pin
+    * @param[in] reset is the reset pin
+    * @param[in] cs is the chip select pin
+    * @param[in] spi is the SPI instance
     */
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi);
 
     /**
    * Writes data to the LCD to show on the screen
-   * @param data being written to LCD
+   * @param[in] data being written to LCD
    */
     void data_write(unsigned char data);
 
@@ -29,17 +29,18 @@ public:
 
     /**
     * Writes data to a single pixel
-    * @param page is the page address to write data to
-    * @param col_up is the first four bits of the column write
-    * @param col_low is the last four bits of the column write
-    * @param data is the data value to write
+     *
+    * @param[in] page is the page address to write data to
+    * @param[in] col_up is the first four bits of the column write
+    * @param[in] col_low is the last four bits of the column write
+    * @param[in] data is the data value to write
     */
     void drive_pixel(unsigned char page, unsigned char col_up,
                      unsigned char col_low, unsigned char data);
 
     /**
     * Clears the screen
-    * @param lcd_string
+    * @param[in] lcd_string
     */
     void clear_lcd(unsigned char* lcd_string);
 
