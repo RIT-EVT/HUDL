@@ -5,19 +5,51 @@
  */
 #include <stdint.h>
 
+#include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/utils/time.hpp>
 #include <HUDL/HUDL.hpp>
+#include <EVT/dev/Timer.hpp>
+#include <HALf3/stm32f3xx_hal_tim.h>
+#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
+
 
 namespace IO = EVT::core::IO;
+namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
 using namespace std;
 
 const uint32_t SPI_SPEED = SPI_SPEED_4MHZ;// 4MHz
 const uint8_t deviceCount = 1;
+
+/**
+ * This struct is a catchall for data that is needed by the CAN interrupt
+ * handler. An instance of this struct will be provided as the parameter
+ * to the interrupt handler.
+ */
+struct CANInterruptParams {
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue;
+};
+
+/**
+ * Interrupt handler for incoming CAN messages.
+ *
+ * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
+ */
+void canInterruptHandler(IO::CANMessage& message, void* priv) {
+    struct CANInterruptParams* params = (CANInterruptParams*) priv;
+
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
+            params->queue;
+
+    if (queue == nullptr)
+        return;
+    if (!message.isCANExtended())
+        queue->append(message);
+}
 
 int main() {
     IO::GPIO* devices[deviceCount];
@@ -42,24 +74,42 @@ int main() {
     // Setup UART
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
-    // String to store user input
-    char buf[100];
+    // Setup CAN
+
+
+    IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
+    // TODO: Need a CAN interrupt handler
+
+
+    IO::CAN::CANStatus result = can.connect();
+
+    // Setup CAN Drivers
+    CO_IF_DRV canStackDriver;
+    CO_IF_CAN_DRV canDriver;
+    CO_IF_TIMER_DRV timerDriver;
+    CO_IF_NVM_DRV nvmDriver;
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+    DEV::Timerf302x8 timer(TIM2, 100);
+    IO::getCANopenCANDriver(&can, &canOpenQueue, &canDriver);
+    IO::getCANopenTimerDriver(&timer, &timerDriver);
+    IO::getCANopenNVMDriver(&nvmDriver);
+
+
+
+    uint16_t tempOne;
+    uint16_t voltageOne;
 
     while (1) {
-        // Read user input
-        uart.printf("Enter message: ");
-        uart.gets(buf, 100);
-
         // Initialized LCD
         board.initLCD();
 
-        // Clear LCD Screen
-        // clear_lcd();
 
         board.drivePixel(1, 1, 1, 255);
         time::wait(10000);
 
         // echoes command back
-        uart.printf("\n\recho: %s\n\r", buf);
+        uart.printf("Temp One: %d\n", tempOne);
+        uart.printf("Temp One: %d\n", voltageOne);
+
     }
 }

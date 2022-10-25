@@ -58,6 +58,8 @@ public:
      */
     void initLCD();
 
+
+
 private:
     /**
      * reg_select PA_3
