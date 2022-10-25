@@ -5,6 +5,7 @@
  */
 
 // clang-format off
+#include "EVT/dev/LCD.hpp"
 #include "EVT/io/GPIO.hpp"
 #include "EVT/io/SPI.hpp"
 #include "HUDL/HUDL.hpp"
