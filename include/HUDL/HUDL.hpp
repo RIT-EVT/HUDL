@@ -1,10 +1,10 @@
 #ifndef _HUDL_
 #define _HUDL_
 
-#include "EVT/dev/LCD.hpp"
-#include "EVT/io/GPIO.hpp"
-#include "EVT/io/SPI.hpp"
-#include "HUDL/HUDL.hpp"
+#include <EVT/dev/LCD.hpp>
+#include <EVT/io/GPIO.hpp>
+#include <EVT/io/SPI.hpp>
+#include <HUDL/HUDL.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -59,12 +59,6 @@ public:
     void initLCD();
 
 private:
-    /**
-     * reg_select PA_3
-     * reset      PB_3
-     * cs         PB_12
-     */
-
     DEV::LCD lcd;
 };
 }// namespace HUDL
