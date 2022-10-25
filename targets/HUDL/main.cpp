@@ -107,7 +107,7 @@ int main() {
         board.drivePixel(1, 1, 1, 255);
         time::wait(10000);
 
-        // echoes command back
+        // TODO: For now should echo values that it pulls. In the future it should write values to the displa
         uart.printf("Temp One: %d\n", tempOne);
         uart.printf("Temp One: %d\n", voltageOne);
 
