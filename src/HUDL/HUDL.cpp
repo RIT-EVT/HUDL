@@ -5,13 +5,13 @@
  */
 
 // clang-format off
-#include "EVT/dev/LCD.hpp"
 #include "EVT/io/GPIO.hpp"
 #include "EVT/io/SPI.hpp"
 #include "HUDL/HUDL.hpp"
 // clang-format on
 
 namespace IO = EVT::core::IO;
+namespace DEV = EVT::core::DEV;
 
 namespace HUDL {
     HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {

@@ -32,7 +32,6 @@ int main() {
     time::wait(100);
     reset.writePin(EVT::core::IO::GPIO::State::HIGH);
     time::wait(100);
-    time::wait()
 
     // set chip select pin
     auto& cs =
@@ -56,16 +55,15 @@ int main() {
     while (1) {
         // Read user input
         uart.printf("Enter message: ");
-        uart
         uart.gets(buf, 100);
 
         // Initialized LCD
-        board.init_LCD();
+        board.initLCD();
 
         // Clear LCD Screen
         // clear_lcd();
 
-        board.drive_pixel(1, 1, 1, 255);
+        board.drivePixel(1, 1, 1, 255);
         time::wait(10000);
 
         // echos command back

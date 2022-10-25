@@ -51,12 +51,12 @@ int main() {
         uart.gets(buf, 100);
 
         // Initialized LCD
-        board.init_LCD();
+        board.initLCD();
 
         // Clear LCD Screen
         // clear_lcd();
 
-        board.drive_pixel(1, 1, 1, 255);
+        board.drivePixel(1, 1, 1, 255);
         time::wait(10000);
 
         // echoes command back

@@ -1,8 +1,14 @@
 #ifndef _HUDL_
 #define _HUDL_
 
+#include "EVT/dev/LCD.hpp"
+#include "EVT/io/GPIO.hpp"
+#include "EVT/io/SPI.hpp"
+#include "HUDL/HUDL.hpp"
+
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
+
 
 namespace HUDL {
     class HUDL {
@@ -22,14 +28,14 @@ namespace HUDL {
          *
        * @param[in] data being written to LCD
        */
-        void dataWrite(unsigned char data);
+        void dataWrite(uint8_t data);
 
         /**
         * Writes commands to the LCD to control the ST7565
          *
         * @param data being written for the command
         */
-        void commWrite(unsigned char data);
+        void commWrite(uint8_t data);
 
         /**
         * Writes data to a single pixel
@@ -39,15 +45,14 @@ namespace HUDL {
         * @param[in] colLow is the last four bits of the column write
         * @param[in] data is the data value to write
         */
-        void drivePixel(unsigned char page, unsigned char colUp,
-                        unsigned char colLow, unsigned char data);
+        void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
 
         /**
         * Clears the screen
          *
         * @param[in] lcd_string
         */
-        void clearLCD(unsigned char* lcd_string);
+        void clearLCD(const uint8_t* lcd_string);
 
         /**
          * Initializes LCD for use
