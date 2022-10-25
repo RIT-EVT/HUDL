@@ -1,13 +1,9 @@
-##############################################################################
-# Convert CMake flags to compiler flags
+###############################################################################
+# Top level CMakeList for building the EVT HUDL source code
 ###############################################################################
 if(EVT_CORE_LOG_ENABLE)
     add_compile_definitions(EVT_CORE_LOG_ENABLE)
 endif()
-
-###############################################################################
-# Top level CMakeList for building the EVT HUDL source code
-###############################################################################
 cmake_minimum_required(VERSION 3.15)
 
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
@@ -18,6 +14,7 @@ add_subdirectory(libs/EVT-core/)
 include(CMakeDependentOption)
 include(${EVT_CORE_DIR}/cmake/evt-core_compiler.cmake)
 include(${EVT_CORE_DIR}/cmake/evt-core_install.cmake)
+
 
 ###############################################################################
 # Project Setup
@@ -35,7 +32,7 @@ project(${BOARD_LIB_NAME}
         LANGUAGES CXX C
         )
 
-add_library(${PROJECT_NAME} STATIC)
+add_library(${PROJECT_NAME} STATIC targets/HUDL/write_to_display.cpp)
 
 # Add sources
 target_sources(${PROJECT_NAME} PRIVATE
