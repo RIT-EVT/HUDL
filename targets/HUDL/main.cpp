@@ -106,6 +106,8 @@ int main() {
     IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
     DEV::Timerf302x8 timer(TIM2, 100);
+    uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
+    CO_TMR_MEM appTmrMem[4];
     // TODO: Need a CAN interrupt handler
 
     // Initialize the CANopen drivers

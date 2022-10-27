@@ -3,8 +3,11 @@
 
 #include <EVT/dev/LCD.hpp>
 #include <EVT/io/GPIO.hpp>
+#include <EVT/io/CANopen.hpp>
 #include <EVT/io/SPI.hpp>
 #include <HUDL/HUDL.hpp>
+#include <Canopen/co_core.h>
+
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -63,8 +66,16 @@ namespace HUDL {
          */
         void initLCD();
 
-        CO_OBJ_T *HUDL::getObjectDictionary();
+        /**
+         * Gets the object dictionary
+         * @return an object dictionary
+         */
+        CO_OBJ_T *getObjectDictionary();
 
+        /**
+         * Gets the size of the Object Dictionary
+         * @return uint16_t size of the Object Dictionary
+         */
         uint16_t getObjectDictionarySize();
 
     private:
@@ -78,7 +89,7 @@ namespace HUDL {
 
         static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
 
-        CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
+        CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
                 {
                         .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = 0,
@@ -102,7 +113,6 @@ namespace HUDL {
 
 
     };
-};
 
 }// namespace HUDL
 

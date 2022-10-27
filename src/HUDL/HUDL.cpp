@@ -43,7 +43,7 @@ CO_OBJ_T* HUDL::getObjectDictionary() {
 }
 
 uint16_t HUDL::getObjectDictionarySize() {
-    return OBJECT_DIRECTIONARY_SIZE;
+    return OBJECT_DICTIONARY_SIZE;
 }
 
 }// namespace HUDL
