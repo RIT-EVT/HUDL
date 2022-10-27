@@ -123,7 +123,16 @@ int main() {
     canStackDriver.Nvm = &nvmDriver;
 
     CO_NODE_SPEC canSpec = {
-
+            .NodeId = HUDL::HUDL::NODE_ID,
+            .Baudrate = IO::CAN::DEFAULT_BAUD,
+            .Dict = hudl.getObjectDictionary(),
+            .DictLen = hudl.getObjectDictionarySize(),
+            .EmcyCode = NULL,
+            .TmrMem = appTmrMem,
+            .TmrNum = 16,
+            .TmrFreq = 100,
+            .Drv = &canStackDriver,
+            .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
     };
 
     CO_NODE canNode;

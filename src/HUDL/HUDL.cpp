@@ -38,4 +38,12 @@ void HUDL::initLCD() {
     lcd.initLCD();
 }
 
+CO_OBJ_T* HUDL::getObjectDictionary() {
+    return &objectDictionary[0];
+}
+
+uint16_t HUDL::getObjectDictionarySize() {
+    return OBJECT_DIRECTIONARY_SIZE;
+}
+
 }// namespace HUDL

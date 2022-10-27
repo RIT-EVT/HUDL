@@ -10,65 +10,89 @@ namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
 namespace HUDL {
-class HUDL {
-public:
-    /**
-    * Default Constructor for the HUDL class
-    *
-    * @param[in] reg_select is the register select pin
-    * @param[in] reset is the reset pin
-    * @param[in] cs is the chip select pin
-    * @param[in] spi is the SPI instance
-    */
-    HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi);
+    class HUDL {
+    public:
+        /**
+         * The node ID used to identify the device on the CAN network.
+         */
+        static constexpr uint8_t NODE_ID = 0x11;
 
-    /**
-     * Writes data to the LCD to show on the screen
+        /**
+        * Default Constructor for the HUDL class
+        *
+        * @param[in] reg_select is the register select pin
+        * @param[in] reset is the reset pin
+        * @param[in] cs is the chip select pin
+        * @param[in] spi is the SPI instance
+        */
+        HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi);
+
+        /**
+         * Writes data to the LCD to show on the screen
+         *
+         * @param[in] data being written to LCD
+         */
+        void dataWrite(uint8_t data);
+
+        /**
+        * Writes commands to the LCD to control the ST7565
+        *
+        * @param data being written for the command
+        */
+        void commWrite(uint8_t data);
+
+        /**
+        * Writes data to a single pixel
+        *
+        * @param[in] page is the page address to write data to
+        * @param[in] colUp is the first four bits of the column write
+        * @param[in] colLow is the last four bits of the column write
+        * @param[in] data is the data value to write
+        */
+        void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
+
+        /**
+        * Clears the screen
+        *
+        * @param[in] lcd_string
+        */
+        void clearLCD(const uint8_t *lcd_string);
+
+        /**
+         * Initializes LCD for use
+         */
+        void initLCD();
+
+    private:
+        /**
+         * reg_select PA_3
+         * reset      PB_3
+         * cs         PB_12
+         */
+
+        DEV::LCD lcd;
+
+        /**
+     * Have to know the size of the object dictionary for initialization
+     * process.
+     */
+        static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
+
+        /**
+     * The object dictionary of the HUDL. Includes settings that determine
+     * how the HUDL functions on the CANopen network as well as the data
+     * that is exposed on the network.
      *
-     * @param[in] data being written to LCD
+     * Array of CANopen objects. +1 for the special "end-of-array" marker
      */
-    void dataWrite(uint8_t data);
-
-    /**
-    * Writes commands to the LCD to control the ST7565
-    *
-    * @param data being written for the command
-    */
-    void commWrite(uint8_t data);
-
-    /**
-    * Writes data to a single pixel
-    *
-    * @param[in] page is the page address to write data to
-    * @param[in] colUp is the first four bits of the column write
-    * @param[in] colLow is the last four bits of the column write
-    * @param[in] data is the data value to write
-    */
-    void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
-
-    /**
-    * Clears the screen
-    *
-    * @param[in] lcd_string
-    */
-    void clearLCD(const uint8_t* lcd_string);
-
-    /**
-     * Initializes LCD for use
-     */
-    void initLCD();
+        CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
 
 
+                // End of dictionary marker
+                CO_OBJ_DIR_ENDMARK,
+        };
 
-private:
-    /**
-     * reg_select PA_3
-     * reset      PB_3
-     * cs         PB_12
-     */
-
-    DEV::LCD lcd;
-};
+    };
 }// namespace HUDL
 
 #endif
