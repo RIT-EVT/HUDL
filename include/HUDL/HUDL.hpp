@@ -54,9 +54,9 @@ namespace HUDL {
         /**
         * Clears the screen
         *
-        * @param[in] lcd_string
+        * @param[in] bitMap a pointer to the bitmap to be displayed
         */
-        void clearLCD(const uint8_t *lcd_string);
+        void clearLCD(const uint8_t *bitMap);
 
         /**
          * Initializes LCD for use
@@ -77,7 +77,7 @@ namespace HUDL {
          * process.
          */
         static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
-        
+
 
         CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
                 {
