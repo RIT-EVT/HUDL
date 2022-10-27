@@ -15,6 +15,7 @@
 #include <EVT/dev/Timer.hpp>
 #include <HALf3/stm32f3xx_hal_tim.h>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
+#include "Canopen/co_core.h"
 
 
 namespace IO = EVT::core::IO;
@@ -69,47 +70,69 @@ int main() {
         devices, deviceCount);
     hudl_spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
 
-    auto board = HUDL::HUDL(reg_select, reset, cs, hudl_spi);
+    auto hudl = HUDL::HUDL(reg_select, reset, cs, hudl_spi);
 
     // Setup UART
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
     // Setup CAN
-
-
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+    DEV::Timerf302x8 timer(TIM2, 100);
     // TODO: Need a CAN interrupt handler
 
-
-    IO::CAN::CANStatus result = can.connect();
-
-    // Setup CAN Drivers
+    // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
     CO_IF_CAN_DRV canDriver;
     CO_IF_TIMER_DRV timerDriver;
     CO_IF_NVM_DRV nvmDriver;
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
-    DEV::Timerf302x8 timer(TIM2, 100);
     IO::getCANopenCANDriver(&can, &canOpenQueue, &canDriver);
     IO::getCANopenTimerDriver(&timer, &timerDriver);
     IO::getCANopenNVMDriver(&nvmDriver);
 
+    // Attach the CANopen drivers
+    canStackDriver.Can = &canDriver;
+    canStackDriver.Timer = &timerDriver;
+    canStackDriver.Nvm = &nvmDriver;
 
+    CO_NODE_SPEC canSpec = {
 
-    uint16_t tempOne;
-    uint16_t voltageOne;
+    };
+
+    CO_NODE canNode;
+    time::wait(500);
+
+    // Join the CANopen network
+    can.connect();
+
+    // Intialize CANopen logic
+    CONodeInit(&canNode, &canSpec);
+    CONodeStart(&canNode);
+    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+
+    // Main processing loop, contains the following logic
+    // 1. Update CANopen logic and processing incomming messages
+    // 2. Run per-loop BMS state logic
+    // 3. Wait for new data to come in
+    hudl.initLCD();
 
     while (1) {
-        // Initialized LCD
-        board.initLCD();
+        // Process incoming CAN messages
+        CONodeProcess(&canNode);
+        // Update the state of timer based events
+        COTmrService(&canNode.Tmr);
+        // Handle executing timer events that have elapsed
+        COTmrProcess(&canNode.Tmr);
+        // Update the state of the BMS
+        // Wait for new data to come in
+        time::wait(10);
 
-
-        board.drivePixel(1, 1, 1, 255);
+        hudl.drivePixel(1, 1, 1, 255);
         time::wait(10000);
 
         // TODO: For now should echo values that it pulls. In the future it should write values to the displa
-        uart.printf("Temp One: %d\n", tempOne);
-        uart.printf("Temp One: %d\n", voltageOne);
-
+//        uart.printf("Temp One: %d\n", tempOne);
+//        uart.printf("Temp One: %d\n", voltageOne);
     }
+
 }
