@@ -73,19 +73,28 @@ namespace HUDL {
         DEV::LCD lcd;
 
         /**
-     * Have to know the size of the object dictionary for initialization
-     * process.
-     */
+         * Have to know the size of the object dictionary for initialization
+         * process.
+         */
         static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
+        
 
-        /**
-     * The object dictionary of the HUDL. Includes settings that determine
-     * how the HUDL functions on the CANopen network as well as the data
-     * that is exposed on the network.
-     *
-     * Array of CANopen objects. +1 for the special "end-of-array" marker
-     */
         CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
+                {
+                    .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+                    .Type = 0,
+                    .Data = (uintptr_t) 2
+                },
+                {
+                    .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+                    .Type = 0,
+                    .Data = CO_LINK(0x2100, 0, 8)// Link to 8bit sample data position in dictionary
+                },
+                {
+                    .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
+                    .Type = 0,
+                    .Data = CO_LINK(0x2100, 1, 16)// Link to 16bit sample data position in dictionary
+                },
 
 
                 // End of dictionary marker
