@@ -63,6 +63,10 @@ namespace HUDL {
          */
         void initLCD();
 
+        CO_OBJ_T *HUDL::getObjectDictionary();
+
+        uint16_t getObjectDictionarySize();
+
     private:
         /**
          * reg_select PA_3
@@ -72,11 +76,7 @@ namespace HUDL {
 
         DEV::LCD lcd;
 
-        /**
-         * //TODO Have to know the size of the object dictionary for initialization process.
-         */
         static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
-
 
         CO_OBJ_T objectDictionary[OBJECT_DIRECTIONARY_SIZE + 1] = {
                 {
@@ -100,10 +100,7 @@ namespace HUDL {
                 CO_OBJ_DIR_ENDMARK,
         };
 
-        CO_OBJ_T *HUDL::getObjectDictionary();
 
-
-        uint16_t getObjectDictionarySize();
     };
 };
 
