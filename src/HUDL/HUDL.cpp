@@ -42,7 +42,7 @@ CO_OBJ_T* HUDL::getObjectDictionary() {
     return &objectDictionary[0];
 }
 
-uint16_t HUDL::getObjectDictionarySize() {
+uint16_t HUDL::getObjectDictionarySize() const {
     return OBJECT_DICTIONARY_SIZE;
 }
 

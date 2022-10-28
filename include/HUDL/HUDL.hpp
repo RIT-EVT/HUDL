@@ -76,7 +76,7 @@ namespace HUDL {
          * Gets the size of the Object Dictionary
          * @return uint16_t size of the Object Dictionary
          */
-        uint16_t getObjectDictionarySize();
+        uint16_t getObjectDictionarySize() const;
 
     private:
         /**
