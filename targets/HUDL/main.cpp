@@ -108,7 +108,7 @@ int main() {
     DEV::Timerf302x8 timer(TIM2, 100);
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
-    // TODO: Need a CAN interrupt handler
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue))
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
