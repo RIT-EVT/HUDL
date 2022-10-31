@@ -99,17 +99,17 @@ namespace HUDL {
         CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
                 {
                         .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = (uintptr_t) 2
                 },
                 {
                         .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = CO_LINK(0x2100, 0, 8)// Link to 8bit sample data position in dictionary
                 },
                 {
                         .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = CO_LINK(0x2100, 1, 16)// Link to 16bit sample data position in dictionary
                 },
 
@@ -117,21 +117,21 @@ namespace HUDL {
                 // Voltage Data
                 { // Voltage One
                         .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8 | CO_OBJ___PRW),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = (uintptr_t) &voltageOne},
 
                 // Temp Data
                 {// Temp One
                         .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8 | CO_OBJ___PRW),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = (uintptr_t) &tempOne},
                 {// Temp Two
                         .Key = CO_KEY(0x2100, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = (uintptr_t) &tempTwo},
                 {// Temp Three
                         .Key = CO_KEY(0x2100, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
-                        .Type = 0,
+                        .Type = nullptr,
                         .Data = (uintptr_t) &tempThree},
 
 
