@@ -108,7 +108,7 @@ int main() {
     DEV::Timerf302x8 timer(TIM2, 100);
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue))
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
@@ -137,20 +137,19 @@ int main() {
             .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
     };
 
+    // Intialize CANopen logic
     CO_NODE canNode;
+    CONodeInit(&canNode, &canSpec);
+    CONodeStart(&canNode);
+    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
     time::wait(500);
 
     // Join the CANopen network
     can.connect();
 
-    // Intialize CANopen logic
-    CONodeInit(&canNode, &canSpec);
-    CONodeStart(&canNode);
-    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
-
     // Main processing loop, contains the following logic
     // 1. Update CANopen logic and processing incomming messages
-    // 2. Run per-loop BMS state logic
+    // 2. Display current data from other devices on the bus
     // 3. Wait for new data to come in
     hudl.initLCD();
 
@@ -170,7 +169,7 @@ int main() {
 
         // TODO: For now should echo values that it pulls. In the future it should write values to the displa
 //        uart.printf("Temp One: %d\n", tempOne);
-//        uart.printf("Temp One: %d\n", voltageOne);
+//        uart.printf("BMS Voltage: %d\n", voltageOne);
     }
 
 }
