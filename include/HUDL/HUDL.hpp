@@ -86,6 +86,13 @@ namespace HUDL {
          */
 
         DEV::LCD lcd;
+        // TODO: Three voltages. Starting with one.
+        uint16_t voltageOne = 0;
+
+        // TODO: Four temps. Starting with three.
+        uint16_t tempOne = 0;
+        uint16_t tempTwo = 0;
+        uint16_t tempThree = 0;
 
         static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
 
@@ -105,6 +112,27 @@ namespace HUDL {
                         .Type = 0,
                         .Data = CO_LINK(0x2100, 1, 16)// Link to 16bit sample data position in dictionary
                 },
+
+
+                // Voltage Data
+                { // Voltage One
+                        .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8 | CO_OBJ___PRW),
+                        .Type = 0,
+                        .Data = (uintptr_t) &voltageOne},
+
+                // Temp Data
+                {// Temp One
+                        .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8 | CO_OBJ___PRW),
+                        .Type = 0,
+                        .Data = (uintptr_t) &tempOne},
+                {// Temp Two
+                        .Key = CO_KEY(0x2100, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
+                        .Type = 0,
+                        .Data = (uintptr_t) &tempTwo},
+                {// Temp Three
+                        .Key = CO_KEY(0x2100, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
+                        .Type = 0,
+                        .Data = (uintptr_t) &tempThree},
 
 
                 // End of dictionary marker
