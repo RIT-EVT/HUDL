@@ -149,8 +149,8 @@ namespace HUDL {
 
 
                 // Voltage Data
-                { // Voltage One
-                        .Key = CO_KEY(0x2100, 0, CO_UNSIGNED8 | CO_OBJ___PRW),
+                { // Total Voltage
+                        .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
                         .Type = nullptr,
                         .Data = (uintptr_t) &voltageOne},
 
