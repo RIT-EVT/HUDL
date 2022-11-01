@@ -120,7 +120,7 @@ namespace HUDL {
                 {
                         .Key = CO_KEY(0x1400, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 3},
+                        .Data = (uintptr_t) 5},
                 {// 180h+TPDO Node-ID
                         .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
@@ -129,23 +129,6 @@ namespace HUDL {
                         .Key = CO_KEY(0x1400, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = (uintptr_t) 0xFE},
-
-                // RPDO0 mapping, determines the PDO messages to send when RPDO1 is triggered
-                // 0: The number of PDO message associated with the RPDO
-                // 1: Link to the first PDO message
-                // n: Link to the nth PDO message
-                {// maps two objects
-                        .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) 2},
-                {// link the first byte to (0x2100, 0, 8) - sampleDataA
-                        .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = CO_LINK(0x2100, 0, 8)},
-                {// link the second byte to (0x2100, 1, 16) - sampleDataB
-                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = CO_LINK(0x2100, 1, 16)},
 
 
                 // Voltage Data
