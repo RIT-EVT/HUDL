@@ -168,18 +168,18 @@ namespace HUDL {
                         .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = 0,
                         .Data = CO_LINK(0x2100, 0, 8)},
-                {// link the second byte to (0x2100, 1, 16) - tempTwo
+                {// link the second byte to (0x2100, 1, 8) - tempTwo
                         .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = 0,
                         .Data = CO_LINK(0x2100, 1, 8)},
-                {// link the first byte to (0x2100, 0, 8) - tempThree
+                {// link the third byte to (0x2100, 2, 8) - tempThree
                         .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = 0,
                         .Data = CO_LINK(0x2100, 2, 8)},
-                {// link the second byte to (0x2100, 1, 16) - tempFour
-                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = 0,
-                        .Data = CO_LINK(0x2100, 3, 8)},
+//                {// link the fourth byte to (0x2100, 3, 8) - tempFour
+//                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
+//                        .Type = 0,
+//                        .Data = CO_LINK(0x2100, 3, 8)},
 
                 // User defined data, this will be where we put elements that can be
                 // accessed via SDO and depending on configuration PDO
@@ -198,11 +198,11 @@ namespace HUDL {
                         .Type = nullptr,
                         .Data = (uintptr_t) &tempThree,
                 },
-                {
-                        .Key = CO_KEY(0x2100, 3, CO_UNSIGNED32 | CO_OBJ___PR_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) &tempFour,
-                },
+//                {
+//                        .Key = CO_KEY(0x2100, 3, CO_UNSIGNED32 | CO_OBJ___PR_),
+//                        .Type = nullptr,
+//                        .Data = (uintptr_t) &tempFour,
+//                },
 
                 // End of dictionary marker
                 CO_OBJ_DIR_ENDMARK};
