@@ -46,5 +46,13 @@ uint16_t HUDL::getObjectDictionarySize() const {
     return OBJECT_DICTIONARY_SIZE;
 }
 
+uint32_t* HUDL::getThermTemps() {
+    return this->thermTemps;
+}
+
+uint16_t* HUDL::getVoltages() {
+    return this->voltages;
+}
+
 }// namespace HUDL
 

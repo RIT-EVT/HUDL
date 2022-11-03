@@ -100,7 +100,7 @@ int main() {
     auto hudl = HUDL::HUDL(reg_select, reset, cs, hudl_spi);
 
     // Setup UART
-    IO::UART const &uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    IO::UART &uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
 
     // Setup CAN
     IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
@@ -168,7 +168,12 @@ int main() {
         time::wait(10000);
 
         // TODO: For now should echo values that it pulls. In the future it should write values to the displa
-//        uart.printf("Temp One: %d\n", tempOne);
+
+        uint32_t const* temps = hudl.getThermTemps();
+        for (int tempCount = 0; tempCount < 3 ; tempCount++) {
+            uart.printf("Temperature %d: %d\n", tempCount, temps + tempCount);
+        }
+
 //        uart.printf("BMS Voltage: %d\n", voltageOne);
     }
 
