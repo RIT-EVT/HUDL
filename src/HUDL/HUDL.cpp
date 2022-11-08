@@ -15,7 +15,7 @@ namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
 namespace HUDL {
-HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {
+HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {
 }
 
 void HUDL::dataWrite(uint8_t data) {
@@ -52,6 +52,11 @@ uint32_t* HUDL::getThermTemps() {
 
 uint16_t* HUDL::getVoltages() {
     return this->voltages;
+}
+
+void HUDL::displayMap(uint8_t* bitmap) {
+    lcd.displayMap(bitmap);
+
 }
 
 }// namespace HUDL

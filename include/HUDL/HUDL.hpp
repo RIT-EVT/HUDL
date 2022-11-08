@@ -28,7 +28,7 @@ namespace HUDL {
         * @param[in] cs is the chip select piarrayn
         * @param[in] spi is the SPI instance
         */
-        HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::GPIO &cs, IO::SPI &spi);
+        HUDL(IO::GPIO &reg_select, IO::GPIO &reset, IO::SPI &spi);
 
         /**
          * Writes data to the LCD to show on the screen
@@ -79,6 +79,8 @@ namespace HUDL {
          * @return uint16_t size of the Object Dictionary
          */
         uint16_t getObjectDictionarySize() const;
+
+        void displayMap(uint8_t* bitmap);
 
         /**
          * Gets BMS Voltage values
