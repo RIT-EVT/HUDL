@@ -86,8 +86,7 @@ uint8_t bitMap[8192] = {
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 
-extern "C" void CONodeFatalError(void) {
-}
+extern "C" void CONodeFatalError(void) {}
 
 extern "C" void COIfCanReceive(CO_IF_FRM *frm) {}
 
@@ -168,25 +167,18 @@ int main() {
 
     auto hudl = HUDL::HUDL(regSelect, reset, hudl_spi);
 
-    // Main processing loop, contains the following logic
-    // 1. Update CANopen logic and processing incoming messages
-    // 2. Display current data from other devices on the bus
-    // 3. Wait for new data to come in
+
     hudl.initLCD();
-    for (int i = 0; i < 1000; i++) {
-        led.toggle();
-        time::wait(500);
-    }
-    hudl.displayMap(bitMap);
 
 
     // Setup CAN
     IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
+
     DEV::Timerf302x8 timer(TIM2, 100);
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
@@ -197,17 +189,24 @@ int main() {
     IO::getCANopenTimerDriver(&timer, &timerDriver);
     IO::getCANopenNVMDriver(&nvmDriver);
 
+    // Join the CANopen network
+    IO::CAN::CANStatus result = can.connect();
+    if (result != IO::CAN::CANStatus::OK) {
+        uart.printf("Failed to connect to CAN network\r\n");
+        return 1;
+    }
     // Attach the CANopen drivers
     canStackDriver.Can = &canDriver;
     canStackDriver.Timer = &timerDriver;
     canStackDriver.Nvm = &nvmDriver;
+
 
     CO_NODE_SPEC canSpec = {
             .NodeId = HUDL::HUDL::NODE_ID,
             .Baudrate = IO::CAN::DEFAULT_BAUD,
             .Dict = hudl.getObjectDictionary(),
             .DictLen = hudl.getObjectDictionarySize(),
-            .EmcyCode = NULL,
+            .EmcyCode = nullptr,
             .TmrMem = appTmrMem,
             .TmrNum = 16,
             .TmrFreq = 100,
@@ -215,27 +214,24 @@ int main() {
             .SdoBuf = reinterpret_cast<uint8_t *>(&sdoBuffer[0]),
     };
 
-    // Intialize CANopen logic
+    // Initializing the CANopen logic, start the CANopen with the node, and set the CAN mode
     CO_NODE canNode;
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
     time::wait(500);
 
-    // Join the CANopen network
-    can.connect();
-
-
-
-
+    // Main processing loop, contains the following logic
+    // 1. Update CANopen logic and processing incoming messages
+    // 2. Display current data from other devices on the bus
+    // 3. Wait for new data to come in
     while (1) {
         // Process incoming CAN messages
         CONodeProcess(&canNode);
         // Update the state of timer based events
-        COTmrService(&canNode.Tmr);
+        COTmrService(&canNode.Tmr); // TODO: why this breaky
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
-        // Update the state of the BMS
         // Wait for new data to come in
         time::wait(10);
 
@@ -246,7 +242,7 @@ int main() {
 
         uint32_t const *temps = hudl.getThermTemps();
         for (int tempCount = 0; tempCount < 3; tempCount++) {
-//            uart.printf("Temperature %d: %d\n", tempCount, temps + tempCount);
+            uart.printf("Temperature %d: %d\n", tempCount, *(temps + tempCount));
         }
 
 //        uart.printf("BMS Voltage: %d\n", voltageOne);
