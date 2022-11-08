@@ -148,6 +148,7 @@ void canInterruptHandler(IO::CANMessage &message, void *priv) {
 }
 
 int main() {
+    IO::init();
     IO::GPIO &ledGPIO = IO::getGPIO<IO::Pin::PA_2>();
     DEV::LED led(ledGPIO, DEV::LED::ActiveState::LOW);
 
@@ -167,7 +168,7 @@ int main() {
 
     auto hudl = HUDL::HUDL(regSelect, reset, hudl_spi);
 
-
+    // initialize the LCD
     hudl.initLCD();
 
 
@@ -185,6 +186,7 @@ int main() {
     CO_IF_CAN_DRV canDriver;
     CO_IF_TIMER_DRV timerDriver;
     CO_IF_NVM_DRV nvmDriver;
+
     IO::getCANopenCANDriver(&can, &canOpenQueue, &canDriver);
     IO::getCANopenTimerDriver(&timer, &timerDriver);
     IO::getCANopenNVMDriver(&nvmDriver);
@@ -229,7 +231,7 @@ int main() {
         // Process incoming CAN messages
         CONodeProcess(&canNode);
         // Update the state of timer based events
-        COTmrService(&canNode.Tmr); // TODO: why this breaky
+        COTmrService(&canNode.Tmr);
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Wait for new data to come in
