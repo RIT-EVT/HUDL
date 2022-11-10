@@ -179,19 +179,19 @@ namespace HUDL {
                 {// maps two objects
                         .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 4},
+                        .Data = (uintptr_t) 2},
                 {// link the first byte to (0x2100, 0, 8) - tempOne
                         .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = CO_LINK(0x2100, 0, 8)},
-                {// link the second byte to (0x2100, 1, 8) - tempTwo
-                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = CO_LINK(0x2100, 1, 8)},
-                {// link the third byte to (0x2100, 2, 8) - tempThree
-                        .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = CO_LINK(0x2100, 2, 8)},
+//                {// link the second byte to (0x2100, 1, 8) - tempTwo
+//                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
+//                        .Type = nullptr,
+//                        .Data = CO_LINK(0x2100, 1, 8)},
+//                {// link the third byte to (0x2100, 2, 8) - tempThree
+//                        .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+//                        .Type = nullptr,
+//                        .Data = CO_LINK(0x2100, 2, 8)},
 //                {// link the fourth byte to (0x2100, 3, 8) - tempFour
 //                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
 //                        .Type = nullptr,
@@ -204,16 +204,16 @@ namespace HUDL {
                         .Type = nullptr,
                         .Data = (uintptr_t) &thermTemps[0],
                 },
-                {
-                        .Key = CO_KEY(0x2100, 1, CO_UNSIGNED32 | CO_OBJ___PR_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) &thermTemps[1],
-                },
-                {
-                        .Key = CO_KEY(0x2100, 2, CO_UNSIGNED32 | CO_OBJ___PR_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) &thermTemps[2],
-                },
+//                {
+//                        .Key = CO_KEY(0x2100, 1, CO_UNSIGNED32 | CO_OBJ___PR_),
+//                        .Type = nullptr,
+//                        .Data = (uintptr_t) &thermTemps[1],
+//                },
+//                {
+//                        .Key = CO_KEY(0x2100, 2, CO_UNSIGNED32 | CO_OBJ___PR_),
+//                        .Type = nullptr,
+//                        .Data = (uintptr_t) &thermTemps[2],
+//                },
 //                {
 //                        .Key = CO_KEY(0x2100, 3, CO_UNSIGNED32 | CO_OBJ___PR_),
 //                        .Type = nullptr,

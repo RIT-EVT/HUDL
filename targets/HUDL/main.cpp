@@ -243,9 +243,11 @@ int main() {
         // TODO: For now should echo values that it pulls. In the future it should write values to the displa
 
         uint32_t const *temps = hudl.getThermTemps();
-        for (int tempCount = 0; tempCount < 3; tempCount++) {
-            uart.printf("Temperature %d: %d\n", tempCount, *(temps + tempCount));
-        }
+        uart.printf("Temperature One: %d\n\r", temps[0]);
+
+//        for (int tempCount = 0; tempCount < 3; tempCount++) {
+//            uart.printf("Temperature %d: %d\n", tempCount, *(temps + tempCount));
+//        }
 
 //        uart.printf("BMS Voltage: %d\n", voltageOne);
     }
