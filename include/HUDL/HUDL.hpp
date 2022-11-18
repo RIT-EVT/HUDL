@@ -163,11 +163,11 @@ namespace HUDL {
                 {
                         .Key = CO_KEY(0x1400, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 3},
+                        .Data = (uintptr_t) 2},
                 {// 180h+TPDO Node-ID
                         .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0)},
+                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)},
                 {// asynchronous trigger
                         .Key = CO_KEY(0x1400, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
@@ -179,7 +179,7 @@ namespace HUDL {
                 {// maps two objects
                         .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 2},
+                        .Data = (uintptr_t) 1},
                 {// link the first byte to (0x2100, 0, 8) - tempOne
                         .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,

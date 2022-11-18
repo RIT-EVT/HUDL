@@ -153,8 +153,9 @@ int main() {
     DEV::LED led(ledGPIO, DEV::LED::ActiveState::LOW);
 
 
-    // Setup UART //TODO: Get UART pins. Causing a core halt
+    // Setup UART
     IO::UART &uart = IO::getUART<IO::Pin::PB_10, IO::Pin::PB_11>(9600);
+
     IO::GPIO *devices[deviceCount];
 
     IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
@@ -216,23 +217,25 @@ int main() {
             .SdoBuf = reinterpret_cast<uint8_t *>(&sdoBuffer[0]),
     };
 
-    // Initializing the CANopen logic, start the CANopen with the node, and set the CAN mode
+    // Initializes the CANopen logic
+    // Start the CANopen with the node
+    // Sets the CAN mode
     CO_NODE canNode;
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
     CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
     time::wait(500);
 
-    // Main processing loop, contains the following logic
-    // 1. Update CANopen logic and processing incoming messages
-    // 2. Display current data from other devices on the bus
-    // 3. Wait for new data to come in
+    // Main processing loop, which contains the following logic:
+    // 1. Update CANopen logic and processes incoming messages
+    // 2. Displays current data from other devices on the bus
+    // 3. Waits for new data to come in
     while (1) {
         // Process incoming CAN messages
         CONodeProcess(&canNode);
-        // Update the state of timer based events
+        // Updates the state of timer based events
         COTmrService(&canNode.Tmr);
-        // Handle executing timer events that have elapsed
+        // Handles executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Wait for new data to come in
         time::wait(10);
@@ -240,7 +243,7 @@ int main() {
         hudl.drivePixel(1, 1, 1, 255);
         time::wait(10000);
 
-        // TODO: For now should echo values that it pulls. In the future it should write values to the displa
+        // TODO: For now should echo values that it pulls. In the future it should write values to the display
 
         uint32_t const *temps = hudl.getThermTemps();
         uart.printf("Temperature One: %d\n\r", temps[0]);
