@@ -167,16 +167,33 @@ namespace HUDL {
                 {// 180h+TPDO Node-ID
                         .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)},
+                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0)},
                 {// asynchronous trigger
                         .Key = CO_KEY(0x1400, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+                        .Type = nullptr,
+                        .Data = (uintptr_t) 0xFE},
+
+                //RPD1 settings
+                // 0: RPDO number in index and total number of sub indexes.
+                // 1: The COB-ID to receive PDOs from.
+                // 2: transmission trigger
+                {
+                        .Key = CO_KEY(0x1401, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+                        .Type = nullptr,
+                        .Data = (uintptr_t) 2},
+                {// 180h+TPDO Node-ID
+                        .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+                        .Type = nullptr,
+                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)},
+                {// asynchronous trigger
+                        .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = (uintptr_t) 0xFE},
 
                 // 0: The number of PDO message associated with the RPDO
                 // 1: Link to the first PDO message
                 // n: Link to the nth PDO message
-                {// maps two objects
+                {// maps twH    o objects
                         .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = (uintptr_t) 1},
