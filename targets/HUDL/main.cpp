@@ -17,7 +17,16 @@
 #include "Canopen/co_core.h"
 #include "Canopen/co_tmr.h"
 #include "EVT/dev/LED.hpp"
+#include "EVT/utils/log.hpp"
 
+namespace IO = EVT::core::IO;
+namespace DEV = EVT::core::DEV;
+namespace time = EVT::core::time;
+namespace log = EVT::core::log;
+using namespace std;
+
+// Global CAN NOde reference
+CO_NODE canNode;
 
 uint8_t bitMap[8192] = {
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -86,6 +95,41 @@ uint8_t bitMap[8192] = {
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 
+
+
+
+const uint32_t SPI_SPEED = SPI_SPEED_500KHZ;
+const uint8_t deviceCount = 1;
+
+/**
+ * This struct is a catchall for data that is needed by the CAN interrupt
+ * handler. An instance of this struct will be provided as the parameter
+ * to the interrupt handler.
+ */
+struct CANInterruptParams {
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> *queue;
+};
+
+// Setup UART
+IO::UART &uart = IO::getUART<IO::Pin::PB_10, IO::Pin::PB_11>(9600);
+
+/**
+ * Interrupt handler for incoming CAN messages.
+ *
+ * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
+ */
+void canInterruptHandler(IO::CANMessage &message, void *priv) {
+    struct CANInterruptParams *params = (CANInterruptParams *) priv;
+
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> *queue =
+            params->queue;
+
+    if (queue == nullptr)
+        return;
+    if (!message.isCANExtended())
+        queue->append(message);
+}
+// CANopen specific callbacks //
 extern "C" void CONodeFatalError(void) {}
 
 extern "C" void COIfCanReceive(CO_IF_FRM *frm) {}
@@ -112,49 +156,25 @@ extern "C" void COTmrLock(void) {}
 
 extern "C" void COTmrUnlock(void) {}
 
-
-namespace IO = EVT::core::IO;
-namespace DEV = EVT::core::DEV;
-namespace time = EVT::core::time;
-using namespace std;
-
-const uint32_t SPI_SPEED = SPI_SPEED_500KHZ;
-const uint8_t deviceCount = 1;
-
-/**
- * This struct is a catchall for data that is needed by the CAN interrupt
- * handler. An instance of this struct will be provided as the parameter
- * to the interrupt handler.
- */
-struct CANInterruptParams {
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> *queue;
-};
-
-/**
- * Interrupt handler for incoming CAN messages.
- *
- * @param priv[in] The private data (FixedQueue<CANOPEN_QUEUE_SIZE, CANMessage>)
- */
-void canInterruptHandler(IO::CANMessage &message, void *priv) {
-    struct CANInterruptParams *params = (CANInterruptParams *) priv;
-
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> *queue =
-            params->queue;
-
-    if (queue == nullptr)
-        return;
-    if (!message.isCANExtended())
-        queue->append(message);
-}
-
 int main() {
     IO::init();
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
     IO::GPIO &ledGPIO = IO::getGPIO<IO::Pin::PA_2>();
+
+    // Setup CAN
+    IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
+
+    DEV::Timerf302x8 timer(TIM2, 100);
+    log::LOGGER.setUART(&uart);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Logger initialized.");
+    timer.stopTimer();
+
+
     DEV::LED led(ledGPIO, DEV::LED::ActiveState::LOW);
 
 
-    // Setup UART
-    IO::UART &uart = IO::getUART<IO::Pin::PB_10, IO::Pin::PB_11>(9600);
 
     IO::GPIO *devices[deviceCount];
 
@@ -172,15 +192,16 @@ int main() {
     // initialize the LCD
     hudl.initLCD();
 
-
-    // Setup CAN
-    IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
-
-    DEV::Timerf302x8 timer(TIM2, 100);
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
+
+    // Join the CANopen network
+    IO::CAN::CANStatus result = can.connect();
+
+    if (result != IO::CAN::CANStatus::OK) {
+        uart.printf("Failed to connect to CAN network\r\n");
+        return 1;
+    }
 
     // Initialize the CANopen drivers
     CO_IF_DRV canStackDriver;
@@ -192,12 +213,6 @@ int main() {
     IO::getCANopenTimerDriver(&timer, &timerDriver);
     IO::getCANopenNVMDriver(&nvmDriver);
 
-    // Join the CANopen network
-    IO::CAN::CANStatus result = can.connect();
-    if (result != IO::CAN::CANStatus::OK) {
-        uart.printf("Failed to connect to CAN network\r\n");
-        return 1;
-    }
     // Attach the CANopen drivers
     canStackDriver.Can = &canDriver;
     canStackDriver.Timer = &timerDriver;
@@ -220,11 +235,12 @@ int main() {
     // Initializes the CANopen logic
     // Start the CANopen with the node
     // Sets the CAN mode
-    CO_NODE canNode;
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
-    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+//    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
     time::wait(500);
+
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Entering loop");
 
     // Main processing loop, which contains the following logic:
     // 1. Update CANopen logic and processes incoming messages
