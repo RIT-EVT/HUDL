@@ -94,10 +94,6 @@ uint8_t bitMap[8192] = {
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-
-
-
-
 const uint32_t SPI_SPEED = SPI_SPEED_500KHZ;
 const uint8_t deviceCount = 1;
 
@@ -129,6 +125,7 @@ void canInterruptHandler(IO::CANMessage &message, void *priv) {
     if (!message.isCANExtended())
         queue->append(message);
 }
+
 // CANopen specific callbacks //
 extern "C" void CONodeFatalError(void) {}
 
@@ -157,7 +154,10 @@ extern "C" void COTmrLock(void) {}
 extern "C" void COTmrUnlock(void) {}
 
 int main() {
+    // Initialize system
     IO::init();
+
+    // Queue that stores CANopen messages
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
     IO::GPIO &ledGPIO = IO::getGPIO<IO::Pin::PA_2>();
 
@@ -165,16 +165,17 @@ int main() {
     IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
     can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
 
+    // Initialize timer
     DEV::Timerf302x8 timer(TIM2, 100);
+
+    // Setup Logger
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Logger initialized.");
     timer.stopTimer();
 
-
     DEV::LED led(ledGPIO, DEV::LED::ActiveState::LOW);
-
-
 
     IO::GPIO *devices[deviceCount];
 
@@ -192,6 +193,7 @@ int main() {
     // initialize the LCD
     hudl.initLCD();
 
+    // Reserve memory for the CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
 
@@ -237,7 +239,7 @@ int main() {
     // Sets the CAN mode
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
-//    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
     time::wait(500);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Entering loop");
