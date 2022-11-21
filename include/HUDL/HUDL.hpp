@@ -1,6 +1,7 @@
 #ifndef _HUDL_
 #define _HUDL_
 
+#include <stdint.h>
 #include <EVT/dev/LCD.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/CANopen.hpp>
@@ -177,34 +178,34 @@ namespace HUDL {
                 // 0: RPDO number in index and total number of sub indexes.
                 // 1: The COB-ID to receive PDOs from.
                 // 2: transmission trigger
-                {
-                        .Key = CO_KEY(0x1401, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) 2},
-                {// 180h+TPDO Node-ID
-                        .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)},
-                {// asynchronous trigger
-                        .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-                        .Type = nullptr,
-                        .Data = (uintptr_t) 0xFE},
+//                {
+//                        .Key = CO_KEY(0x1401, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+//                        .Type = nullptr,
+//                        .Data = (uintptr_t) 2},
+//                {// 180h+TPDO Node-ID
+//                        .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+//                        .Type = nullptr,
+//                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1)},
+//                {// asynchronous trigger
+//                        .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+//                        .Type = nullptr,
+//                        .Data = (uintptr_t) 0xFE},
 
                 // 0: The number of PDO message associated with the RPDO
                 // 1: Link to the first PDO message
                 // n: Link to the nth PDO message
-                {// maps twH    o objects
+                {// maps two objects
                         .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 1},
+                        .Data = (uintptr_t) 2},
                 {// link the first byte to (0x2100, 0, 8) - tempOne
                         .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = CO_LINK(0x2100, 0, 8)},
-//                {// link the second byte to (0x2100, 1, 8) - tempTwo
-//                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-//                        .Type = nullptr,
-//                        .Data = CO_LINK(0x2100, 1, 8)},
+                {// link the second byte to (0x2100, 1, 8) - tempTwo
+                        .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
+                        .Type = nullptr,
+                        .Data = CO_LINK(0x2100, 1, 8)},
 //                {// link the third byte to (0x2100, 2, 8) - tempThree
 //                        .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
 //                        .Type = nullptr,
