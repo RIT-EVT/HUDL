@@ -157,25 +157,8 @@ extern "C" void COTmrLock(void) {}
 extern "C" void COTmrUnlock(void) {}
 
 int main() {
+    // Initialize system
     IO::init();
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
-    IO::GPIO &ledGPIO = IO::getGPIO<IO::Pin::PA_2>();
-
-    // Setup CAN
-    IO::CAN &can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>(); // TODO: Figure out CAN pins
-    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void *>(&canOpenQueue));
-
-    DEV::Timerf302x8 timer(TIM2, 100);
-    log::LOGGER.setUART(&uart);
-    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
-    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Logger initialized.");
-    timer.stopTimer();
-
-
-    DEV::LED led(ledGPIO, DEV::LED::ActiveState::LOW);
-
-
-
     IO::GPIO *devices[deviceCount];
 
     IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
@@ -192,19 +175,39 @@ int main() {
     // initialize the LCD
     hudl.initLCD();
 
+    // Will store CANopen messages that will be populated by the EVT-core CAN
+    // interrupt
+    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+
+    // Initialize CAN, add an IRQ which will add messages to the queue above
+    IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
+    can.addIRQHandler(canInterruptHandler, reinterpret_cast<void*>(&canOpenQueue));
+
+    // Initialize the timer
+    DEV::Timerf302x8 timer(TIM2, 100);
+    timer.stopTimer();
+
+    // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
 
-    // Join the CANopen network
+    // Attempt to join the CAN network
     IO::CAN::CANStatus result = can.connect();
 
+    //test that the board is connected to the can network
     if (result != IO::CAN::CANStatus::OK) {
         uart.printf("Failed to connect to CAN network\r\n");
         return 1;
     }
 
-    // Initialize the CANopen drivers
+    ///////////////////////////////////////////////////////////////////////////
+    // Setup CAN configuration, this handles making drivers, applying settings.
+    // And generally creating the CANopen stack node which is the interface
+    // between the application (the code we write) and the physical CAN network
+    ///////////////////////////////////////////////////////////////////////////
+    // Make drivers
     CO_IF_DRV canStackDriver;
+
     CO_IF_CAN_DRV canDriver;
     CO_IF_TIMER_DRV timerDriver;
     CO_IF_NVM_DRV nvmDriver;
@@ -213,61 +216,60 @@ int main() {
     IO::getCANopenTimerDriver(&timer, &timerDriver);
     IO::getCANopenNVMDriver(&nvmDriver);
 
-    // Attach the CANopen drivers
     canStackDriver.Can = &canDriver;
     canStackDriver.Timer = &timerDriver;
     canStackDriver.Nvm = &nvmDriver;
 
-
+    //setup CANopen Node
     CO_NODE_SPEC canSpec = {
-            .NodeId = HUDL::HUDL::NODE_ID,
+            .NodeId = 0x02,
             .Baudrate = IO::CAN::DEFAULT_BAUD,
             .Dict = hudl.getObjectDictionary(),
             .DictLen = hudl.getObjectDictionarySize(),
-            .EmcyCode = nullptr,
+            .EmcyCode = NULL,
             .TmrMem = appTmrMem,
             .TmrNum = 16,
             .TmrFreq = 100,
             .Drv = &canStackDriver,
-            .SdoBuf = reinterpret_cast<uint8_t *>(&sdoBuffer[0]),
+            .SdoBuf = reinterpret_cast<uint8_t*>(&sdoBuffer[0]),
     };
 
-    // Initializes the CANopen logic
-    // Start the CANopen with the node
-    // Sets the CAN mode
+    CO_NODE canNode;
+
     CONodeInit(&canNode, &canSpec);
     CONodeStart(&canNode);
-//    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+    CONmtSetMode(&canNode.Nmt, CO_OPERATIONAL);
+
     time::wait(500);
 
-    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Entering loop");
+    IO::GPIO &ledGPIO = IO::getGPIO<IO::Pin::PA_2>();
+    DEV::LED led(ledGPIO, DEV::LED::ActiveState::LOW);
+
+
 
     // Main processing loop, which contains the following logic:
     // 1. Update CANopen logic and processes incoming messages
     // 2. Displays current data from other devices on the bus
     // 3. Waits for new data to come in
+    //print any CANopen errors
+    uart.printf("Error: %d\r\n", CONodeGetErr(&canNode));
+    uint8_t lastVal1 = 0;
+    uint16_t lastVal2 = 0;
     while (1) {
+        //Print new value when changed over CAN
+        if (lastVal1 != hudl.getSampleDataA() || lastVal2 != hudl.getSampleDataB()) {
+            lastVal1 = hudl.getSampleDataA();
+            lastVal2 = hudl.getSampleDataB();
+            uart.printf("Current value: %X, %X\r\n", lastVal1, lastVal2);
+        }
         // Process incoming CAN messages
         CONodeProcess(&canNode);
-        // Updates the state of timer based events
+        // Update the state of timer based events
         COTmrService(&canNode.Tmr);
-        // Handles executing timer events that have elapsed
+        // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Wait for new data to come in
         time::wait(10);
-
-        hudl.drivePixel(1, 1, 1, 255);
-
-        // TODO: For now should echo values that it pulls. In the future it should write values to the display
-
-        uint32_t const *temps = hudl.getThermTemps();
-        uart.printf("Temperature One: %d\n\r", temps[0]);
-
-//        for (int tempCount = 0; tempCount < 3; tempCount++) {
-//            uart.printf("Temperature %d: %d\n", tempCount, *(temps + tempCount));
-//        }
-
-//        uart.printf("BMS Voltage: %d\n", voltageOne);
     }
 
 }
