@@ -181,20 +181,22 @@ int main() {
 
     //print any CANopen errors
     uart.printf("Error: %d\r\n", CONodeGetErr(&canNode));
-    uint8_t lastVal1 = 0;
-    uint16_t lastVal2 = 0;
     while (1) {
         //Print new value when changed over CAN
         uint32_t *temps = hudl.getThermTemps();
-        uart.printf("Current value: %X, %X\r\n", *temps, *(temps + 1));
         // Process incoming CAN messages
+        for (int i = 0; i < 3; i++) {
+            uart.printf("Temp %d: %d\n\r", i, *(temps + i));
+        }
+
+
         CONodeProcess(&canNode);
         // Update the state of timer based events
         COTmrService(&canNode.Tmr);
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Wait for new data to come in
-        time::wait(10);
+        time::wait(1000);
     }
 }
 
