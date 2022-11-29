@@ -159,7 +159,7 @@ int main() {
 
     //setup CANopen Node
     CO_NODE_SPEC canSpec = {
-            .NodeId = 0x02,
+            .NodeId = HUDL::HUDL::NODE_ID,
             .Baudrate = IO::CAN::DEFAULT_BAUD,
             .Dict = hudl.getObjectDictionary(),
             .DictLen = hudl.getObjectDictionarySize(),
