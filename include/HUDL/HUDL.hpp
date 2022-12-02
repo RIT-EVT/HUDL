@@ -318,12 +318,12 @@ namespace HUDL {
                 {
                         .Key = CO_KEY(0x1200, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 0x600 + 0x01, //TODO: HUDL Node ID or TMS Node ID?
+                        .Data = (uintptr_t) 0x600 + NODE_ID,
                 },
                 {
                         .Key = CO_KEY(0x1200, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 0x580 + 0x01,
+                        .Data = (uintptr_t) 0x580 + NODE_ID,
                 },
 
                 //RPDO settings
@@ -339,7 +339,7 @@ namespace HUDL {
                         // 180h+TPDO Node-ID
                         .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0),
+                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + 1,
                 },
                 {
                         // asynchronous trigger
