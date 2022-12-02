@@ -98,6 +98,7 @@ int main() {
     // Initialize system
     IO::init();
 
+    uart.printf("Fuck you\n\r");
     // Will store CANopen messages that will be populated by the EVT-core CAN
     // interrupt
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
