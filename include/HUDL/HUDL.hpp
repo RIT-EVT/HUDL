@@ -21,87 +21,87 @@ public:
     static constexpr uint8_t NODE_ID = 0x11;
 
     /**
-* Default Constructor for the HUDL class
-*
-* @param[in] reg_select is the register select pin
-* @param[in] reset is the reset pin
-* @param[in] cs is the chip select piarrayn
-* @param[in] spi is the SPI instance
-*/
+     * Default Constructor for the HUDL class
+     *
+     * @param[in] reg_select is the register select pin
+     * @param[in] reset is the reset pin
+     * @param[in] cs is the chip select piarrayn
+     * @param[in] spi is the SPI instance
+     */
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi);
 
     /**
-* Writes data to the LCD to show on the screen
-*
-* @param[in] data being written to LCD
-*/
+     * Writes data to the LCD to show on the screen
+     *
+     * @param[in] data being written to LCD
+     */
     void dataWrite(uint8_t data);
 
     /**
-* Writes commands to the LCD to control the ST7565
-*
-* @param data being written for the command
-*/
+     * Writes commands to the LCD to control the ST7565
+     *
+     * @param data being written for the command
+     */
     void commWrite(uint8_t data);
 
     /**
-* Writes data to a single pixel
-*
-* @param[in] page is the page address to write data to
-* @param[in] colUp is the first four bits of the column write
-* @param[in] colLow is the last four bits of the column write
-* @param[in] data is the data value to write
-*/
+     * Writes data to a single pixel
+     *
+     * @param[in] page is the page address to write data to
+     * @param[in] colUp is the first four bits of the column write
+     * @param[in] colLow is the last four bits of the column write
+     * @param[in] data is the data value to write
+     */
     void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
 
     /**
-* Clears the screen
-*
-* @param[in] bitMap a pointer to the bitmap to be displayed
-*/
+     * Clears the screen
+     *
+     * @param[in] bitMap a pointer to the bitmap to be displayed
+     */
     void clearLCD(const uint8_t* bitMap);
 
     /**
-* Initializes LCD for use
-*/
+     * Initializes LCD for use
+     */
     void initLCD();
 
     /**
-* Gets the object dictionary
-*
-* @return an object dictionary
-*/
+     * Gets the object dictionary
+     *
+     * @return an object dictionary
+     */
     CO_OBJ_T* getObjectDictionary();
 
     /**
- * Gets the size of the Object Dictionary
- *
- * @return uint16_t size of the Object Dictionary
- */
+     * Gets the size of the Object Dictionary
+     *
+     * @return uint16_t size of the Object Dictionary
+     */
     uint16_t getObjectDictionarySize() const;
 
     void displayMap(uint8_t* bitmap);
 
     /**
-* Gets BMS Voltage values
-*
-* @return uint16_t* pointer to voltage values
- */
+     * Gets BMS Voltage values
+     *
+     * @return uint16_t* pointer to voltage values
+     */
     uint16_t* getVoltages();
 
     /**
-* Gets temperature values
-*
-* @return uint32_t* pointer of temperature values
-*/
+     * Gets temperature values
+     *
+     * @return uint32_t* pointer of temperature values
+     */
     uint32_t* getThermTemps();
 
 private:
     /**
-         * reg_select PA_3
-         * reset      PB_3
-         * cs         PB_12
-         */
+     * reg_select PA_3
+     * reset      PB_3
+     * cs         PB_12
+     */
     DEV::LCD lcd;
     uint16_t voltages[1] = {};
 
@@ -110,7 +110,7 @@ private:
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
-        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), 0, (uintptr_t) 0x80},
+        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), nullptr, (uintptr_t) 0x80},
         {
             .Key = CO_KEY(0x1018, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -135,7 +135,7 @@ private:
         {
             .Key = CO_KEY(0x1200, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 0x600 + NODE_ID,// TODO: Check with TMS NODE ID
+            .Data = (uintptr_t) 0x600 + NODE_ID,
         },
         {
             .Key = CO_KEY(0x1200, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
