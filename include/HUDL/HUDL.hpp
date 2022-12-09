@@ -87,7 +87,7 @@ public:
      *
      * @return uint16_t* pointer to voltage values
      */
-    uint16_t* getVoltages();
+    uint32_t getTotalVoltage();
 
     /**
      * Gets temperature values
@@ -103,7 +103,7 @@ private:
      * cs         PB_12
      */
     DEV::LCD lcd;
-    uint16_t voltages[1] = {};
+    uint32_t totalVoltage = 0;
 
     uint32_t thermTemps[5] = {0, 0, 0, 0};
 
@@ -116,7 +116,7 @@ private:
         /**
          * Information about the hardware , hard coded sample values for now
          * 1: Vendor ID
-         * 2: Product Code 
+         * 2: Product Code
          * 3: Revision Number
          * 4: Serial Number
          */
@@ -202,6 +202,29 @@ private:
         },
 
         /**
+         * RPDO2 settings
+         * 0: RPDO number in index and total number of sub indexes.
+         * 1: The COB-ID to receive PDOs from.
+         * 2: transmission trigger
+         */
+        {
+            .Key = CO_KEY(0x1402, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 3,
+        },
+        {
+            .Key = CO_KEY(0x1402, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 0x40000180 + 0x05,
+        },
+        {
+            .Key = CO_KEY(0x1402, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 0xFE,
+        },
+
+
+        /**
          * RPDO0 mapping, determines the PDO messages to send when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message
@@ -246,6 +269,23 @@ private:
         },
 
         /**
+         * RPDO2 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * 0: The number of PDO message associated with the RPDO
+         * 1: Link to the first PDO message
+         * n: Link to the nth PDO message
+         */
+        {
+            .Key = CO_KEY(0x1602, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 1,
+        },
+        {
+            .Key = CO_KEY(0x1602, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2101, 0, 8),
+        },
+
+        /**
          * User defined data. Put elements that can be accessed via SDO
          * and depdning on the configuration PDO
          */
@@ -269,6 +309,12 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[3],
         },
+        {
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &totalVoltage,
+        },
+
         CO_OBJ_DIR_ENDMARK};
 };
 

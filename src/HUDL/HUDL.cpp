@@ -49,8 +49,8 @@ uint32_t* HUDL::getThermTemps() {
     return this->thermTemps;
 }
 
-uint16_t* HUDL::getVoltages() {
-    return this->voltages;
+uint32_t HUDL::getTotalVoltage() {
+    return this->totalVoltage;
 }
 
 void HUDL::displayMap(uint8_t* bitmap) {

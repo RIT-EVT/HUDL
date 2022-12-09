@@ -183,10 +183,14 @@ int main() {
     while (1) {
         //Print new value when changed over CAN
         uint32_t* temps = hudl.getThermTemps();
+        uint32_t totalVoltage = hudl.getTotalVoltage();
+
         // Process incoming CAN messages
         for (int i = 0; i < 4; i++) {
             uart.printf("Temp %d: %d\n\r", i, *(temps + i));
         }
+
+        uart.printf("Total Voltage: %d\n\r", totalVoltage);
 
         CONodeProcess(&canNode);
         // Update the state of timer based events
