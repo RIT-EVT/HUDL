@@ -223,7 +223,6 @@ private:
             .Data = (uintptr_t) 0xFE,
         },
 
-
         /**
          * RPDO0 mapping, determines the PDO messages to send when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
