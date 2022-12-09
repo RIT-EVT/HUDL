@@ -110,7 +110,16 @@ private:
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
+        // Sync ID, defaults to 0x80
         {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), nullptr, (uintptr_t) 0x80},
+
+        /**
+         * Information about the hardware , hard coded sample values for now
+         * 1: Vendor ID
+         * 2: Product Code 
+         * 3: Revision Number
+         * 4: Serial Number
+         */
         {
             .Key = CO_KEY(0x1018, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -132,6 +141,12 @@ private:
             .Data = (uintptr_t) 0x13,
         },
 
+
+        /**
+         * SDO CAN message IDS.
+         * 1: Client -> Server ID, default is 0x600 + NODE_ID
+         * 2: Server -> Client ID, default is 0x580 + NODE_ID
+         */
         {
             .Key = CO_KEY(0x1200, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -143,6 +158,12 @@ private:
             .Data = (uintptr_t) 0x580 + NODE_ID,
         },
 
+        /**
+         * RPDO0 settings
+         * 0: RPDO number in index and total number of sub indexes.
+         * 1: The COB-ID to receive PDOs from.
+         * 2: transmission trigger
+         */
         {
             .Key = CO_KEY(0x1400, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -159,6 +180,12 @@ private:
             .Data = (uintptr_t) 0xFE,
         },
 
+        /**
+         * RPDO1 settings
+         * 0: RPDO number in index and total number of sub indexes.
+         * 1: The COB-ID to receive PDOs from.
+         * 2: transmission trigger
+         */
         {
             .Key = CO_KEY(0x1401, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -175,6 +202,12 @@ private:
             .Data = (uintptr_t) 0xFE,
         },
 
+        /**
+         * RPDO0 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * 0: The number of PDO message associated with the RPDO
+         * 1: Link to the first PDO message
+         * n: Link to the nth PDO message
+         */
         {
             .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -191,6 +224,13 @@ private:
             .Data = CO_LINK(0x2100, 1, 8),
         },
 
+
+        /**
+         * RPDO1 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * 0: The number of PDO message associated with the RPDO
+         * 1: Link to the first PDO message
+         * n: Link to the nth PDO message
+         */
         {
             .Key = CO_KEY(0x1601, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
@@ -207,6 +247,10 @@ private:
             .Data = CO_LINK(0x2100, 3, 8),
         },
 
+        /**
+         * User defined data. Put elements that can be accessed via SDO
+         * and depdning on the configuration PDO
+         */
         {
             .Key = CO_KEY(0x2100, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
             .Type = nullptr,
