@@ -58,8 +58,6 @@ uint16_t* HUDL::getVoltages() {
 
 void HUDL::displayMap(uint8_t* bitmap) {
     lcd.displayMap(bitmap);
-
 }
 
 }// namespace HUDL
-
