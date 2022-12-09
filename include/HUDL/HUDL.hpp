@@ -253,13 +253,11 @@ namespace HUDL {
                         .Data = (uintptr_t) 2,
                 },
                 {
-                        // link the first byte to (0x2100, 0, 8) - tempThree
                         .Key = CO_KEY(0x1601, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = CO_LINK(0x2100, 2, 8),
                 },
                 {
-                        // link the second byte to (0x2100, 1, 16) - tempFour
                         .Key = CO_KEY(0x1601, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
                         .Data = CO_LINK(0x2100, 3, 8),
@@ -278,12 +276,12 @@ namespace HUDL {
                         .Data = (uintptr_t) &thermTemps[1],
                 },
                 {
-                        .Key = CO_KEY(0x2100, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+                        .Key = CO_KEY(0x2100, 2, CO_UNSIGNED32 | CO_OBJ___PRW),
                         .Type = nullptr,
                         .Data = (uintptr_t) &thermTemps[2],
                 },
                 {
-                        .Key = CO_KEY(0x2100, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+                        .Key = CO_KEY(0x2100, 3, CO_UNSIGNED32 | CO_OBJ___PRW),
                         .Type = nullptr,
                         .Data = (uintptr_t) &thermTemps[3],
                 },

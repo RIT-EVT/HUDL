@@ -185,7 +185,7 @@ int main() {
         //Print new value when changed over CAN
         uint32_t *temps = hudl.getThermTemps();
         // Process incoming CAN messages
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             uart.printf("Temp %d: %d\n\r", i, *(temps + i));
         }
 
