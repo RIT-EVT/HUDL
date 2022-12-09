@@ -96,37 +96,16 @@ public:
          */
     uint32_t* getThermTemps();
 
-    void setSampleDataA(uint8_t newValue) {
-        this->sampleDataA = newValue;
-    }
-
-    uint8_t getSampleDataA() {
-        return sampleDataA;
-    }
-
-    void setSampleDataB(uint16_t newValue) {
-        this->sampleDataB = newValue;
-    }
-
-    uint16_t getSampleDataB() {
-        return sampleDataB;
-    }
-
 private:
     /**
          * reg_select PA_3
          * reset      PB_3
          * cs         PB_12
          */
-    uint8_t sampleDataA;
-    uint16_t sampleDataB;
-
     DEV::LCD lcd;
-    // TODO: Three voltages. Starting with one.
     uint16_t voltages[1] = {};
 
-    // TODO: Four temps. Starting with three.
-    uint32_t thermTemps[3] = {0, 0, 0};
+    uint32_t thermTemps[5] = {0, 0, 0, 0};
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
 
@@ -223,19 +202,16 @@ private:
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
         {
-            // maps two objects
             .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 2,
         },
         {
-            // link the first byte to (0x2100, 0, 8) - tempOne
             .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 0, 8),
         },
         {
-            // link the second byte to (0x2100, 1, 8) - tempTwo
             .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 1, 8),
@@ -246,7 +222,6 @@ private:
         // 1: Link to the first PDO message
         // n: Link to the nth PDO message
         {
-            // maps two objects
             .Key = CO_KEY(0x1601, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 2,
@@ -284,7 +259,6 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[3],
         },
-        // End of dictionary marker
         CO_OBJ_DIR_ENDMARK};
 };
 
