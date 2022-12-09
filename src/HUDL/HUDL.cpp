@@ -15,10 +15,7 @@ namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
 namespace HUDL {
-HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {
-    this->sampleDataA = 0;
-    this->sampleDataB = 0;
-}
+HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {}
 
 void HUDL::dataWrite(uint8_t data) {
     lcd.dataWrite(data);
