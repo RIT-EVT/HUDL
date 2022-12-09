@@ -15,7 +15,7 @@ namespace DEV = EVT::core::DEV;
 namespace HUDL {
 class HUDL {
 public:
-/**
+    /**
 * The node ID used to identify the device on the CAN network.
 */
     static constexpr uint8_t NODE_ID = 0x11;
@@ -37,7 +37,7 @@ public:
 */
     void dataWrite(uint8_t data);
 
-/**
+    /**
 * Writes commands to the LCD to control the ST7565
 *
 * @param data being written for the command
@@ -142,7 +142,6 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 0x580 + NODE_ID,
         },
-
 
         {
             .Key = CO_KEY(0x1400, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
