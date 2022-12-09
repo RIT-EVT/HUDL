@@ -141,7 +141,6 @@ private:
             .Data = (uintptr_t) 0x13,
         },
 
-
         /**
          * SDO CAN message IDS.
          * 1: Client -> Server ID, default is 0x600 + NODE_ID
@@ -223,7 +222,6 @@ private:
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 1, 8),
         },
-
 
         /**
          * RPDO1 mapping, determines the PDO messages to send when RPDO1 is triggered
