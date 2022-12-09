@@ -167,7 +167,7 @@ namespace HUDL {
                 {
                         .Key = CO_KEY(0x1200, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) 0x600 + NODE_ID,
+                        .Data = (uintptr_t) 0x600 + NODE_ID, // TODO: Check with TMS NODE ID 
                 },
                 {
                         .Key = CO_KEY(0x1200, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
@@ -188,7 +188,7 @@ namespace HUDL {
                         // 180h+TPDO Node-ID
                         .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
                         .Type = nullptr,
-                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + 1,
+                        .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0),
                 },
                 {
                         // asynchronous trigger
@@ -277,7 +277,16 @@ namespace HUDL {
                         .Type = nullptr,
                         .Data = (uintptr_t) &thermTemps[1],
                 },
-
+                {
+                        .Key = CO_KEY(0x2100, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+                        .Type = nullptr,
+                        .Data = (uintptr_t) &thermTemps[2],
+                },
+                {
+                        .Key = CO_KEY(0x2100, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+                        .Type = nullptr,
+                        .Data = (uintptr_t) &thermTemps[3],
+                },
                 // End of dictionary marker
                 CO_OBJ_DIR_ENDMARK};
 
