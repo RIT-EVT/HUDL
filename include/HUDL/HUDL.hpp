@@ -76,7 +76,7 @@ public:
     /**
      * Gets the size of the Object Dictionary
      *
-     * @return uint16_t size of the Object Dictionary
+     * @return size of the Object Dictionary
      */
     uint16_t getObjectDictionarySize() const;
 
@@ -85,14 +85,14 @@ public:
     /**
      * Gets BMS Voltage values
      *
-     * @return uint16_t* pointer to voltage values
+     * @return pointer to voltage values
      */
     uint16_t* getVoltages();
 
     /**
      * Gets temperature values
      *
-     * @return uint32_t* pointer of temperature values
+     * @return pointer of temperature values
      */
     uint32_t* getThermTemps();
 
