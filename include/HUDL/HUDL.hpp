@@ -16,8 +16,8 @@ namespace HUDL {
 class HUDL {
 public:
     /**
-* The node ID used to identify the device on the CAN network.
-*/
+     * The node ID used to identify the device on the CAN network.
+     */
     static constexpr uint8_t NODE_ID = 0x11;
 
     /**
@@ -116,7 +116,7 @@ private:
         /**
          * Information about the hardware , hard coded sample values for now
          * 1: Vendor ID
-         * 2: Product Code 
+         * 2: Product Code
          * 3: Revision Number
          * 4: Serial Number
          */
