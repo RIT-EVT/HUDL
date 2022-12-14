@@ -205,10 +205,10 @@ private:
         },
 
         /**
-         * RPDO0 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * RPDO0 mapping, determines the PDO messages to send when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message
-         * n: Link to the nth PDO message
+         * 1: Link to the first PDO message - tempThree
+         * 2: Link to the second PDO message - tempFour
          */
         {
             .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -229,8 +229,8 @@ private:
         /**
          * RPDO1 mapping, determines the PDO messages to send when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message
-         * n: Link to the nth PDO message
+         * 1: Link to the first PDO message - tempThree
+         * 2: Link to the second PDO message - tempFour
          */
         {
             .Key = CO_KEY(0x1601, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
