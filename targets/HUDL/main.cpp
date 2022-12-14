@@ -5,10 +5,9 @@
  */
 #include <stdint.h>
 
-#include "Canopen/co_core.h"
-#include "Canopen/co_tmr.h"
-#include "EVT/dev/LED.hpp"
-#include "EVT/utils/log.hpp"
+#include <Canopen/co_core.h>
+#include <Canopen/co_tmr.h>
+#include <EVT/utils/log.hpp>
 #include <EVT/dev/Timer.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/io/CANopen.hpp>
@@ -194,6 +193,6 @@ int main() {
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Wait for new data to come in
-        time::wait(1000);
+        time::wait(100);
     }
 }
