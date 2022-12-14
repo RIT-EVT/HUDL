@@ -6,13 +6,13 @@
 
 #include <Canopen/co_core.h>
 #include <Canopen/co_tmr.h>
-#include <EVT/utils/log.hpp>
 #include <EVT/dev/Timer.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 #include <HUDL/HUDL.hpp>
 
@@ -40,7 +40,6 @@ const uint8_t deviceCount = 1;
  *
  * @param message[in] The passed in CAN message that was read.
  */
-
 
 // create a can interrupt handler
 void canInterrupt(IO::CANMessage& message, void* priv) {
