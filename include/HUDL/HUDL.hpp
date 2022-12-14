@@ -13,6 +13,12 @@ namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
 namespace HUDL {
+
+/**
+ * Interfaces with the HUDL device. Provides an object dictionary
+ * for communicating with other devices on the CAN network and functionality
+ * for displaying what a user wants to an LCD screen
+ */
 class HUDL {
 public:
     /**
