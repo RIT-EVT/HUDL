@@ -1,21 +1,18 @@
 /**
- * This is a basic sample of using the UART module. The program provides a
- * basic echo functionality where the uart will write back whatever the user
- * enters.
+ * This is the main code running on the HUDL responsible for displaying
+ * information that other boards that broadcast through the CAN network
  */
 #include <stdint.h>
 
-#include "Canopen/co_core.h"
-#include "Canopen/co_tmr.h"
-#include "EVT/dev/LED.hpp"
-#include "EVT/utils/log.hpp"
+#include <Canopen/co_core.h>
+#include <Canopen/co_tmr.h>
 #include <EVT/dev/Timer.hpp>
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
-#include <EVT/io/UART.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
+#include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 #include <HUDL/HUDL.hpp>
 
@@ -44,21 +41,19 @@ const uint8_t deviceCount = 1;
  * @param message[in] The passed in CAN message that was read.
  */
 
-IO::UART& uart = IO::getUART<IO::Pin::PB_10, IO::Pin::PB_11>(9600);
-
 // create a can interrupt handler
 void canInterrupt(IO::CANMessage& message, void* priv) {
     EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>* queue =
         (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
 
-    //print out raw received data
-    uart.printf("Got RAW message from %X of length %d with data: ", message.getId(), message.getDataLength());
+    // Log raw received data
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Got RAW message from %X of length %d with data: ", message.getId(), message.getDataLength());
+
     uint8_t* data = message.getPayload();
     for (int i = 0; i < message.getDataLength(); i++) {
-        uart.printf("%X ", *data);
+        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "%X ", *data);
         data++;
     }
-    uart.printf("\r\n");
 
     if (queue != nullptr)
         queue->append(message);
@@ -121,7 +116,7 @@ int main() {
 
     hudl_spi.configureSPI(SPI_SPEED, SPI_MODE0, SPI_MSB_FIRST);
 
-    auto hudl = HUDL::HUDL(regSelect, reset, hudl_spi);
+    HUDL::HUDL hudl(regSelect, reset, hudl_spi);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
@@ -132,7 +127,8 @@ int main() {
 
     //test that the board is connected to the can network
     if (result != IO::CAN::CANStatus::OK) {
-        uart.printf("Failed to connect to CAN network\r\n");
+        log::LOGGER.log(log::Logger::LogLevel::ERROR, "Failed to connect to CAN network\r\n");
+
         return 1;
     }
 
@@ -179,18 +175,10 @@ int main() {
     time::wait(500);
 
     //print any CANopen errors
-    uart.printf("Error: %d\r\n", CONodeGetErr(&canNode));
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Error: %d\r\n", CONodeGetErr(&canNode));
+
     while (1) {
-        //Print new value when changed over CAN
-        uint32_t* temps = hudl.getThermTemps();
-        uint32_t totalVoltage = hudl.getTotalVoltage();
-
-        // Process incoming CAN messages
-        for (int i = 0; i < 4; i++) {
-            uart.printf("Temp %d: %d\n\r", i, *(temps + i));
-        }
-
-        uart.printf("Total Voltage: %d\n\r", totalVoltage);
+        hudl.updateLCD();
 
         CONodeProcess(&canNode);
         // Update the state of timer based events
@@ -198,6 +186,6 @@ int main() {
         // Handle executing timer events that have elapsed
         COTmrProcess(&canNode.Tmr);
         // Wait for new data to come in
-        time::wait(1000);
+        time::wait(100);
     }
 }

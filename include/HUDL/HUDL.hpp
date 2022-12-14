@@ -13,11 +13,17 @@ namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
 namespace HUDL {
+
+/**
+ * Interfaces with the HUDL device. Provides an object dictionary
+ * for communicating with other devices on the CAN network and functionality
+ * for displaying what a user wants to an LCD screen
+ */
 class HUDL {
 public:
     /**
-* The node ID used to identify the device on the CAN network.
-*/
+     * The node ID used to identify the device on the CAN network.
+     */
     static constexpr uint8_t NODE_ID = 0x11;
 
     /**
@@ -76,25 +82,14 @@ public:
     /**
      * Gets the size of the Object Dictionary
      *
-     * @return uint16_t size of the Object Dictionary
+     * @return size of the Object Dictionary
      */
     uint16_t getObjectDictionarySize() const;
 
     void displayMap(uint8_t* bitmap);
 
-    /**
-     * Gets BMS Voltage values
-     *
-     * @return uint16_t* pointer to voltage values
-     */
-    uint32_t getTotalVoltage();
 
-    /**
-     * Gets temperature values
-     *
-     * @return uint32_t* pointer of temperature values
-     */
-    uint32_t* getThermTemps();
+    void updateLCD() const;
 
 private:
     /**
@@ -105,13 +100,19 @@ private:
     DEV::LCD lcd;
     uint32_t totalVoltage = 0;
 
-    uint32_t thermTemps[5] = {0, 0, 0, 0};
+    uint32_t thermTemps[4] = {};
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
+    static constexpr uintptr_t TMS_TPDO_COB_ID = CO_COBID_TPDO_DEFAULT(0);
+    static constexpr uintptr_t BMS_TPDO_COB_ID = CO_COBID_TPDO_DEFAULT(1);
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
-        {CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_), nullptr, (uintptr_t) 0x80},
+        {
+            CO_KEY(0x1005, 0, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            nullptr,
+            (uintptr_t) 0x80,
+        },
 
         /**
          * Information about the hardware , hard coded sample values for now
@@ -171,7 +172,7 @@ private:
         {
             .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0),
+            .Data = TMS_TPDO_COB_ID,
         },
         {
             .Key = CO_KEY(0x1400, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -193,7 +194,7 @@ private:
         {
             .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1),
+            .Data = BMS_TPDO_COB_ID,
         },
         {
             .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -224,10 +225,10 @@ private:
         },
 
         /**
-         * RPDO0 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * RPDO0 mapping, determines the PDO messages to send when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message
-         * n: Link to the nth PDO message
+         * 1: Link to the first PDO message - tempThree
+         * 2: Link to the second PDO message - tempFour
          */
         {
             .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -237,19 +238,19 @@ private:
         {
             .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 0, 8),
+            .Data = CO_LINK(0x2100, 0, 32),
         },
         {
             .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 1, 8),
+            .Data = CO_LINK(0x2100, 1, 32),
         },
 
         /**
          * RPDO1 mapping, determines the PDO messages to send when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message
-         * n: Link to the nth PDO message
+         * 1: Link to the first PDO message - tempThree
+         * 2: Link to the second PDO message - tempFour
          */
         {
             .Key = CO_KEY(0x1601, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -259,19 +260,18 @@ private:
         {
             .Key = CO_KEY(0x1601, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 2, 8),
+            .Data = CO_LINK(0x2100, 2, 32),
         },
         {
             .Key = CO_KEY(0x1601, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 3, 8),
+            .Data = CO_LINK(0x2100, 3, 32),
         },
 
         /**
          * RPDO2 mapping, determines the PDO messages to send when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message
-         * n: Link to the nth PDO message
+         * 1: Link to the first PDO message - totalVoltage
          */
         {
             .Key = CO_KEY(0x1602, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
