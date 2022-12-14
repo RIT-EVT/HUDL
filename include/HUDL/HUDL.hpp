@@ -105,8 +105,8 @@ private:
     uint32_t thermTemps[4] = {};
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
-    static constexpr uintptr_t TMS_TPDO_COB_ID = CO_COBID_TPDO_DEFAULT(0);
-    static constexpr uintptr_t BMS_TPDO_COB_ID = CO_COBID_TPDO_DEFAULT(1);
+    static constexpr uintptr_t TMS_TPDO0_COB_ID = CO_COBID_TPDO_DEFAULT(0);
+    static constexpr uintptr_t TMS_TPDO1_COB_ID = CO_COBID_TPDO_DEFAULT(1);
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
@@ -174,7 +174,7 @@ private:
         {
             .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = TMS_TPDO_COB_ID,
+            .Data = TMS_TPDO0_COB_ID,
         },
         {
             .Key = CO_KEY(0x1400, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -196,7 +196,7 @@ private:
         {
             .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = BMS_TPDO_COB_ID,
+            .Data = TMS_TPDO1_COB_ID,
         },
         {
             .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
