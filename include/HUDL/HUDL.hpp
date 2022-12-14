@@ -218,12 +218,12 @@ private:
         {
             .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 0, 8),
+            .Data = CO_LINK(0x2100, 0, 32),
         },
         {
             .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 1, 8),
+            .Data = CO_LINK(0x2100, 1, 32),
         },
 
         /**
@@ -240,12 +240,12 @@ private:
         {
             .Key = CO_KEY(0x1601, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 2, 8),
+            .Data = CO_LINK(0x2100, 2, 32),
         },
         {
             .Key = CO_KEY(0x1601, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 3, 8),
+            .Data = CO_LINK(0x2100, 3, 32),
         },
 
         /**

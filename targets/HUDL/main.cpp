@@ -120,7 +120,7 @@ int main() {
 
     hudl_spi.configureSPI(SPI_SPEED, SPI_MODE0, SPI_MSB_FIRST);
 
-    auto hudl = HUDL::HUDL(regSelect, reset, hudl_spi);
+    HUDL::HUDL hudl(regSelect, reset, hudl_spi);
 
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
