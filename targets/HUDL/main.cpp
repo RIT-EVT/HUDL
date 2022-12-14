@@ -7,13 +7,14 @@
 #include <Canopen/co_core.h>
 #include <Canopen/co_tmr.h>
 #include <EVT/dev/Timer.hpp>
-#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
+
+#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <HUDL/HUDL.hpp>
 
 namespace IO = EVT::core::IO;
