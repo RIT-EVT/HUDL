@@ -105,7 +105,7 @@ private:
     DEV::LCD lcd;
     uint16_t voltages[1] = {};
 
-    uint32_t thermTemps[5] = {0, 0, 0, 0};
+    uint32_t thermTemps[4] = {};
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
 
