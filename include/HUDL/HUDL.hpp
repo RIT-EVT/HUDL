@@ -88,6 +88,9 @@ public:
 
     void displayMap(uint8_t* bitmap);
 
+    /**
+     * Updates the LCD display with values received from the CAN network
+     */
     void updateLCD() const;
 
 private:
