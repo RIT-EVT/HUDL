@@ -82,19 +82,7 @@ public:
 
     void displayMap(uint8_t* bitmap);
 
-    /**
-     * Gets BMS Voltage values
-     *
-     * @return pointer to voltage values
-     */
-    uint16_t* getVoltages();
-
-    /**
-     * Gets temperature values
-     *
-     * @return pointer of temperature values
-     */
-    uint32_t* getThermTemps();
+    void updateLCD() const;
 
 private:
     /**

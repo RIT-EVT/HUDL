@@ -5,14 +5,16 @@
  */
 
 // clang-format off
-#include "EVT/dev/LCD.hpp"
-#include "EVT/io/GPIO.hpp"
-#include "EVT/io/SPI.hpp"
+#include <EVT/dev/LCD.hpp>
+#include <EVT/io/GPIO.hpp>
+#include <EVT/io/SPI.hpp>
+#include <EVT/utils/log.hpp>
 #include "HUDL/HUDL.hpp"
 // clang-format on
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
+namespace log = EVT::core::log;
 
 namespace HUDL {
 HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {}
@@ -45,12 +47,10 @@ uint16_t HUDL::getObjectDictionarySize() const {
     return OBJECT_DICTIONARY_SIZE;
 }
 
-uint32_t* HUDL::getThermTemps() {
-    return this->thermTemps;
-}
-
-uint16_t* HUDL::getVoltages() {
-    return this->voltages;
+void HUDL::updateLCD() const {
+    for (int i = 0; i < 4; i++) {
+        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
+    }
 }
 
 void HUDL::displayMap(uint8_t* bitmap) {
