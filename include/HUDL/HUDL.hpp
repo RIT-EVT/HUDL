@@ -105,8 +105,8 @@ private:
     uint32_t thermTemps[4] = {};
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
-    static constexpr uintptr_t TMS_TPDO0_COB_ID = CO_COBID_TPDO_DEFAULT(0);
-    static constexpr uintptr_t TMS_TPDO1_COB_ID = CO_COBID_TPDO_DEFAULT(1);
+    static constexpr uintptr_t TMS_NODE_ID = 0x02;
+    static constexpr uintptr_t BMS_NODE_ID = 0x05;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
@@ -174,7 +174,7 @@ private:
         {
             .Key = CO_KEY(0x1400, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = TMS_TPDO0_COB_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + TMS_NODE_ID,
         },
         {
             .Key = CO_KEY(0x1400, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -196,7 +196,7 @@ private:
         {
             .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = TMS_TPDO1_COB_ID,
+            .Data = CO_COBID_TPDO_DEFAULT(1) + TMS_NODE_ID,
         },
         {
             .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -207,8 +207,8 @@ private:
         /**
          * RPDO0 mapping, determines the PDO messages to send when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - tempThree
-         * 2: Link to the second PDO message - tempFour
+         * 1: Link to the first PDO message - tempOne
+         * 2: Link to the second PDO message - tempTwo
          */
         {
             .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
