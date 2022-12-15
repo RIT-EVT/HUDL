@@ -105,7 +105,7 @@ private:
     uint32_t thermTemps[4] = {};
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
-    static constexpr uintptr_t TMS_NODE_ID = 0x02;
+    static constexpr uintptr_t TMS_NODE_ID = 0x08;
     static constexpr uintptr_t BMS_NODE_ID = 0x05;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
