@@ -5,18 +5,19 @@
  */
 
 // clang-format off
-#include "EVT/dev/LCD.hpp"
-#include "EVT/io/GPIO.hpp"
-#include "EVT/io/SPI.hpp"
-#include "HUDL/HUDL.hpp"
+#include <EVT/dev/LCD.hpp>
+#include <EVT/io/GPIO.hpp>
+#include <EVT/io/SPI.hpp>
+#include <EVT/utils/log.hpp>
+#include <HUDL/HUDL.hpp>
 // clang-format on
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
+namespace log = EVT::core::log;
 
 namespace HUDL {
-HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::GPIO& cs, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {
-}
+HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {}
 
 void HUDL::dataWrite(uint8_t data) {
     lcd.dataWrite(data);
@@ -36,6 +37,24 @@ void HUDL::clearLCD(const uint8_t* bitmap) {
 
 void HUDL::initLCD() {
     lcd.initLCD();
+}
+
+CO_OBJ_T* HUDL::getObjectDictionary() {
+    return &objectDictionary[0];
+}
+
+uint16_t HUDL::getObjectDictionarySize() const {
+    return OBJECT_DICTIONARY_SIZE;
+}
+
+void HUDL::updateLCD() const {
+    for (int i = 0; i < 4; i++) {
+        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
+    }
+}
+
+void HUDL::displayMap(uint8_t* bitmap) {
+    lcd.displayMap(bitmap);
 }
 
 }// namespace HUDL

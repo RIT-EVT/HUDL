@@ -44,7 +44,7 @@ int main() {
             devices, DEVICE_COUNT);
     spi.configureSPI(SPI_SPEED, SPI_MODE3, SPI_MSB_FIRST);
 
-    auto board = HUDL::HUDL(reg_select, reset, cs, spi);
+    auto board = HUDL::HUDL(reg_select, reset, spi);
 
     // Setup UART
     IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
