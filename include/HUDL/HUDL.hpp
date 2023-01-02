@@ -226,7 +226,7 @@ private:
         },
 
         /**
-         * RPDO0 mapping, determines the PDO messages to send when RPDO0 is triggered
+         * RPDO0 mapping, determines the PDO messages to receive when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - tempOne
          * 2: Link to the second PDO message - tempTwo
@@ -248,7 +248,7 @@ private:
         },
 
         /**
-         * RPDO1 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * RPDO1 mapping, determines the PDO messages to receive when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - tempThree
          * 2: Link to the second PDO message - tempFour
@@ -270,7 +270,7 @@ private:
         },
 
         /**
-         * RPDO2 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * RPDO2 mapping, determines the PDO messages to receive when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - totalVoltage
          */
