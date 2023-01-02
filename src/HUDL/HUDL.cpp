@@ -51,6 +51,8 @@ void HUDL::updateLCD() const {
     for (int i = 0; i < 4; i++) {
         log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
     }
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total Voltage: %d\n\r", totalVoltage);
+
 }
 
 void HUDL::displayMap(uint8_t* bitmap) {

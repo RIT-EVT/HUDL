@@ -31,7 +31,6 @@ public:
      *
      * @param[in] reg_select is the register select pin
      * @param[in] reset is the reset pin
-     * @param[in] cs is the chip select piarrayn
      * @param[in] spi is the SPI instance
      */
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi);
@@ -100,7 +99,7 @@ private:
      * cs         PB_12
      */
     DEV::LCD lcd;
-    uint16_t voltages[1] = {};
+    uint32_t totalVoltage = 0;
 
     uint32_t thermTemps[4] = {};
 
@@ -205,7 +204,29 @@ private:
         },
 
         /**
-         * RPDO0 mapping, determines the PDO messages to send when RPDO0 is triggered
+         * RPDO2 settings
+         * 0: RPDO number in index and total number of sub indexes.
+         * 1: The COB-ID to receive PDOs from.
+         * 2: transmission trigger
+         */
+        {
+            .Key = CO_KEY(0x1402, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 3,
+        },
+        {
+            .Key = CO_KEY(0x1402, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + BMS_NODE_ID,
+        },
+        {
+            .Key = CO_KEY(0x1402, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 0xFE,
+        },
+
+        /**
+         * RPDO0 mapping, determines the PDO messages to receive when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - tempOne
          * 2: Link to the second PDO message - tempTwo
@@ -227,7 +248,7 @@ private:
         },
 
         /**
-         * RPDO1 mapping, determines the PDO messages to send when RPDO1 is triggered
+         * RPDO1 mapping, determines the PDO messages to receive when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - tempThree
          * 2: Link to the second PDO message - tempFour
@@ -246,6 +267,22 @@ private:
             .Key = CO_KEY(0x1601, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2100, 3, 32),
+        },
+
+        /**
+         * RPDO2 mapping, determines the PDO messages to receive when RPDO1 is triggered
+         * 0: The number of PDO message associated with the RPDO
+         * 1: Link to the first PDO message - totalVoltage
+         */
+        {
+            .Key = CO_KEY(0x1602, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 1,
+        },
+        {
+            .Key = CO_KEY(0x1602, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2101, 0, 32),
         },
 
         /**
@@ -272,6 +309,12 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[3],
         },
+        {
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &totalVoltage,
+        },
+
         CO_OBJ_DIR_ENDMARK};
 };
 
