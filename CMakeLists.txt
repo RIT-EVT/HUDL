@@ -7,6 +7,7 @@ endif()
 cmake_minimum_required(VERSION 3.15)
 
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
+set(TARGET_DEV        "STM32F302x8")
 
 # Link to the EVT-core library
 add_subdirectory(libs/EVT-core/)
