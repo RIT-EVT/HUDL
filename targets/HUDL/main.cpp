@@ -126,11 +126,15 @@ int main() {
     // Attempt to join the CAN network
     IO::CAN::CANStatus result = can.connect();
 
+    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    log::LOGGER.setUART(&uart);
+
     //test that the board is connected to the can network
     if (result != IO::CAN::CANStatus::OK) {
         log::LOGGER.log(log::Logger::LogLevel::ERROR, "Failed to connect to CAN network\r\n");
-
         return 1;
+    } else {
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Connected to CAN network\r\n");
     }
 
     ///////////////////////////////////////////////////////////////////////////

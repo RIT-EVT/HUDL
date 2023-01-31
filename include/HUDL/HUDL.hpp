@@ -339,7 +339,8 @@ private:
          * RPDO3 mapping, determines the PDO messages to receive when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - statusWord
-         * 2: Link to the second PD0 message -
+         * 2: Link to the second PD0 message - positionActual
+         * 2: Link to the third PD0 message - velocityActual
          */
         {
             .Key = CO_KEY(0x1603, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -365,8 +366,7 @@ private:
         /**
          * RPDO3 mapping, determines the PDO messages to receive when RPDO1 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - statusWord
-         * 2: Link to the second PD0 message -
+         * 1: Link to the first PDO message - velocityValue
          */
         {
             .Key = CO_KEY(0x1604, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
@@ -379,7 +379,7 @@ private:
             .Data = CO_LINK(0x2103, 0, 32),
         },
         {
-            .Key = CO_KEY(0x1604, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Key = CO_KEY(0x1604, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = CO_LINK(0x2103, 1, 32),
         },
@@ -425,7 +425,7 @@ private:
         {
             .Key = CO_KEY(0x2102, 2, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
-            .Data = (uintptr_t) &totalVoltage,
+            .Data = (uintptr_t) &torqueActual,
         },
         {
             .Key = CO_KEY(0x2103, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
