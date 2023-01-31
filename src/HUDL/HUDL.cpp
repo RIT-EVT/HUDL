@@ -56,7 +56,6 @@ void HUDL::updateLCD() const {
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Position Actual: %d\n\r", positionActual);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Torque Actual: %d\n\r", torqueActual);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Velocity Value: %d\n\r", velocityValue);
-
 }
 
 void HUDL::displayMap(uint8_t* bitmap) {
