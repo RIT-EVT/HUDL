@@ -64,10 +64,6 @@ void HUDL::updateLCD() {
     char voltage[32];
     std::sprintf(voltage, "%lu v", totalVoltage);
 
-    char voltage[32];
-    std::sprintf(voltage, "%lu v", totalVoltage);
-
-
     setTextForSection(0, voltage);
 //    setTextForSection(2, "25 MPH");
 //    setTextForSection(2, "3000");
