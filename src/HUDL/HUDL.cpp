@@ -65,14 +65,14 @@ void HUDL::updateLCD() {
     std::sprintf(voltage, "%lu v", totalVoltage);
 
     setTextForSection(0, voltage);
-//    setTextForSection(2, "25 MPH");
-//    setTextForSection(2, "3000");
+    //    setTextForSection(2, "25 MPH");
+    //    setTextForSection(2, "3000");
     setTextForSection(3, tempOne);
     setTextForSection(4, tempTwo);
     setTextForSection(5, tempThree);
-//    setTextForSection(6, "ON");
-//    setTextForSection(7, "Ready");
-//    setTextForSection(8, "100 NM");
+    //    setTextForSection(6, "ON");
+    //    setTextForSection(7, "Ready");
+    //    setTextForSection(8, "100 NM");
 }
 
 void HUDL::setTextForSection(uint8_t section, const char* text) {
@@ -88,7 +88,7 @@ void HUDL::setDefaultSections(char** newSectionTitles) {
 }
 
 void HUDL::writeText(const char* text, uint8_t page, uint8_t column, bool wrapText) {
-    lcd.writeText(text ,page, column, wrapText);
+    lcd.writeText(text, page, column, wrapText);
 }
 
 void HUDL::displayBitMapInArea(uint8_t* bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column) {
