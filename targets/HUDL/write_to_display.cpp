@@ -63,7 +63,7 @@ int main() {
         // Clear LCD Screen
         // clear_lcd();
 
-        board.drivePixel(1, 1, 1, 255);
+        board.driveColumn(1, 1, 1, 255);
         time::wait(10000);
 
         // echos command back

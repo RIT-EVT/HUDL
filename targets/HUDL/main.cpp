@@ -178,6 +178,8 @@ int main() {
     //print any CANopen errors
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Error: %d\r\n", CONodeGetErr(&canNode));
 
+    hudl.initLCD();
+
     while (1) {
         hudl.updateLCD();
 

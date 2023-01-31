@@ -36,35 +36,78 @@ public:
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi);
 
     /**
-     * Writes data to the LCD to show on the screen
+     * Displays the data to a singular column on the display. Because the display works in 8 bit vertical columns,
+     * this is the most fine grained change you can have.
      *
-     * @param[in] data being written to LCD
+     * @param[in] page Page address to write to
+     * @param[in] colUp Bits to write to the page address
+     * @param[in] colLow Bits to write to the column select
+     * @param[in] data Bits to write to the LCD
      */
-    void dataWrite(uint8_t data);
+    void driveColumn(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
 
     /**
-     * Writes commands to the LCD to control the ST7565
-     *
-     * @param data being written for the command
+     * Clears the LCD. Changes are not mirrored in the bitmap.
      */
-    void commWrite(uint8_t data);
+    void clearLCD();
 
     /**
-     * Writes data to a single pixel
+     * Clears only a certain area on the display screen.
      *
-     * @param[in] page is the page address to write data to
-     * @param[in] colUp is the first four bits of the column write
-     * @param[in] colLow is the last four bits of the column write
-     * @param[in] data is the data value to write
+     * @param[in] width the width in pixels of the area to clear. Range: 0-127
+     * @param[in] height the height in pixels of the area to clear. Range: 0-63
+     * @param[in] page the page to start the clearing on. Range: 0-7.
+     * @param[in] column the column to start clearing on. Range: 0-127
      */
-    void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
+    void clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column);
 
     /**
-     * Clears the screen
+     * Displays the map for diagnostic purposes
      *
-     * @param[in] bitMap a pointer to the bitmap to be displayed
+     * @param[in] bitMap Bitmap to be displayed
      */
-    void clearLCD(const uint8_t* bitMap);
+    void setEntireScreenBitMap(const uint8_t* bitMap);
+
+    /**
+     * Displays the given bit map at a certain height and width on the page.
+     *
+     * @param bitMap[in] the bitmap to display.
+     * @param bitMapWidth[in] the width of the bitmap in pixels.
+     * @param bitMapHeight[in] the height of the bitmap in pixels.
+     * @param page[in] the page to draw the bitmap on. Range: 0-7.
+     * @param column[in] the column to draw the bitmap on. Range:0-127.
+     */
+    void displayBitMapInArea(uint8_t* bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column);
+
+    /**
+     * Writes text to the screen. Has options to wrap the text around the edge of the screen if needed.
+     *
+     * @param text[in] the text to write to the screen.
+     * @param page[in] the page to write the text too. Range 0-7.
+     * @param column[in] the column to write the text too. Range 0-127.
+     * @param wrapText[in] whether or not the text should be wrapped around the edge of the screen.
+     */
+    void writeText(const char* text, uint8_t page, uint8_t column, bool wrapText);
+
+    /**
+     * Set the default section titles to be displayed.
+     *
+     * @param[in] newSectionTitles an array of section titles to display.
+     */
+    void setDefaultSections(char* newSectionTitles[9]);
+
+    /**
+     * Displays the section headers. Only needs to be called once unless cleared.
+     */
+    void displaySectionHeaders();
+
+    /**
+     * Set the text for a certain section of the screen.
+     *
+     * @param[in] section the section number to set the text for.
+     * @param[in] text the text to write into the section.
+     */
+    void setTextForSection(uint8_t section, const char* text);
 
     /**
      * Initializes LCD for use
@@ -85,12 +128,10 @@ public:
      */
     uint16_t getObjectDictionarySize() const;
 
-    void displayMap(uint8_t* bitmap);
-
     /**
      * Updates the LCD display with values received from the CAN network
      */
-    void updateLCD() const;
+    void updateLCD();
 
 private:
     /**
