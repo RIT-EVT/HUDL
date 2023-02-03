@@ -23,19 +23,6 @@ HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(r
 void HUDL::initLCD() {
     lcd.initLCD();
     lcd.clearLCD();
-
-    char* titles[9] = {
-        "B Voltage",
-        "Speed",
-        "RPM",
-        "Temp 1",
-        "Temp 2",
-        "Temp 3",
-        "Status 1",
-        "Pre Stat",
-        "Torque",
-    };
-
     setDefaultSections(titles);
     displaySectionHeaders();
 }
@@ -85,29 +72,5 @@ void HUDL::displaySectionHeaders() {
 
 void HUDL::setDefaultSections(char** newSectionTitles) {
     lcd.setDefaultSections(newSectionTitles);
-}
-
-void HUDL::writeText(const char* text, uint8_t page, uint8_t column, bool wrapText) {
-    lcd.writeText(text, page, column, wrapText);
-}
-
-void HUDL::displayBitMapInArea(uint8_t* bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column) {
-    lcd.displayBitMapInArea(bitMap, bitMapWidth, bitMapHeight, page, column);
-}
-
-void HUDL::setEntireScreenBitMap(const uint8_t* bitMap) {
-    lcd.setEntireScreenBitMap(bitMap);
-}
-
-void HUDL::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column) {
-    lcd.clearArea(width, height, page, column);
-}
-
-void HUDL::clearLCD() {
-    lcd.clearLCD();
-}
-
-void HUDL::driveColumn(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data) {
-    lcd.driveColumn(page, colUp, colLow, data);
 }
 }// namespace HUDL
