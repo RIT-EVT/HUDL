@@ -316,7 +316,6 @@ private:
      * @param[in] text the text to write into the section.
      */
     void setTextForSection(uint8_t section, const char* text);
-
 };
 
 }// namespace HUDL
