@@ -36,26 +36,6 @@ public:
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi);
 
     /**
-     * Set the default section titles to be displayed.
-     *
-     * @param[in] newSectionTitles an array of section titles to display.
-     */
-    void setDefaultSections(char* newSectionTitles[9]);
-
-    /**
-     * Displays the section headers. Only needs to be called once unless cleared.
-     */
-    void displaySectionHeaders();
-
-    /**
-     * Set the text for a certain section of the screen.
-     *
-     * @param[in] section the section number to set the text for.
-     * @param[in] text the text to write into the section.
-     */
-    void setTextForSection(uint8_t section, const char* text);
-
-    /**
      * Initializes LCD for use
      */
     void initLCD();
@@ -317,6 +297,25 @@ private:
         "Torque",
     };
 
+    /**
+     * Set the default section titles to be displayed.
+     *
+     * @param[in] newSectionTitles an array of section titles to display.
+     */
+    void setDefaultSections(char* newSectionTitles[9]);
+
+    /**
+     * Displays the section headers. Only needs to be called once unless cleared.
+     */
+    void displaySectionHeaders();
+
+    /**
+     * Set the text for a certain section of the screen.
+     *
+     * @param[in] section the section number to set the text for.
+     * @param[in] text the text to write into the section.
+     */
+    void setTextForSection(uint8_t section, const char* text);
 
 };
 
