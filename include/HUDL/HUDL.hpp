@@ -316,8 +316,6 @@ private:
         "Pre Stat",
         "Torque",
     };
-
-
 };
 
 }// namespace HUDL
