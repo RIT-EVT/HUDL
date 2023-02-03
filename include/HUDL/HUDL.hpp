@@ -103,9 +103,13 @@ private:
 
     uint32_t thermTemps[4] = {};
 
+    /** The status word provided by the PVC node over CAN. Found in the first 16 bits of the 1st PDO coming from the PVC. */
     uint16_t statusWord = 0;
+    /** The position actual value provided by the PVC node over CAN. Found in the middle 32 bits of the 1st PDO coming from the PVC. */
     uint32_t positionActual = 0;
+    /** The torque actual value provided by the PVC node over CAN. Found in the last 16 bits of the 1st PDO coming from the PVC. */
     uint16_t torqueActual = 0;
+    /** The velocity value provided by the PVC node over CAN. Found in the last 32 bits of the 4th PDO coming from the PVC. */
     uint32_t velocityValue = 0;
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 46;
@@ -260,17 +264,17 @@ private:
          * 2: transmission trigger
          */
         {
-            .Key = CO_KEY(0x1403, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Key = CO_KEY(0x1404, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 3,
         },
         {
-            .Key = CO_KEY(0x1403, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Key = CO_KEY(0x1404, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3) + PVC_NODE_ID,
         },
         {
-            .Key = CO_KEY(0x1403, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Key = CO_KEY(0x1404, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 0xFE,
         },
