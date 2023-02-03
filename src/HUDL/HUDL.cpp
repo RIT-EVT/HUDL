@@ -52,7 +52,7 @@ void HUDL::updateLCD() const {
         log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
     }
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total Voltage: %d\n\r", totalVoltage);
-    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Status Word: %d\n\r", statusWord);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Status Word: 0x%X\n\r", statusWord);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Position Actual: %d\n\r", positionActual);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Torque Actual: %d\n\r", torqueActual);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Velocity Value: %d\n\r", velocityValue);

@@ -436,7 +436,8 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) &velocityValue,
         },
-        CO_OBJ_DIR_ENDMARK};
+        CO_OBJ_DIR_ENDMARK,
+    };
 };
 
 }// namespace HUDL
