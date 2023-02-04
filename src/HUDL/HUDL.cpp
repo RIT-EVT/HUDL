@@ -23,8 +23,8 @@ HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(r
 void HUDL::initLCD() {
     lcd.initLCD();
     lcd.clearLCD();
-    setDefaultSections(titles);
-    displaySectionHeaders();
+    setDefaultSections(SECTION_TITLES);
+    lcd.displaySectionHeaders();
 }
 
 CO_OBJ_T* HUDL::getObjectDictionary() {
@@ -51,26 +51,15 @@ void HUDL::updateLCD() {
     char voltage[32];
     std::sprintf(voltage, "%lu v", totalVoltage);
 
-    setTextForSection(0, voltage);
+    lcd.setTextForSection(0, voltage);
     //    setTextForSection(2, "25 MPH");
     //    setTextForSection(2, "3000");
-    setTextForSection(3, tempOne);
-    setTextForSection(4, tempTwo);
-    setTextForSection(5, tempThree);
+    lcd.setTextForSection(3, tempOne);
+    lcd.setTextForSection(4, tempTwo);
+    lcd.setTextForSection(5, tempThree);
     //    setTextForSection(6, "ON");
     //    setTextForSection(7, "Ready");
     //    setTextForSection(8, "100 NM");
 }
 
-void HUDL::setTextForSection(uint8_t section, const char* text) {
-    lcd.setTextForSection(section, text);
-}
-
-void HUDL::displaySectionHeaders() {
-    lcd.displaySectionHeaders();
-}
-
-void HUDL::setDefaultSections(char** newSectionTitles) {
-    lcd.setDefaultSections(newSectionTitles);
-}
 }// namespace HUDL
