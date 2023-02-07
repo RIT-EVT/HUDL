@@ -285,7 +285,7 @@ private:
         CO_OBJ_DIR_ENDMARK,
     };
 
-     static constexpr char *  SECTION_TITLES[9] {
+    static constexpr char* SECTION_TITLES[9]{
         "B Voltage",
         "Speed",
         "RPM",
@@ -294,8 +294,8 @@ private:
         "Temp 3",
         "Status 1",
         "Pre Stat",
-        "Torque"
-    };};
+        "Torque"};
+};
 
 }// namespace HUDL
 
