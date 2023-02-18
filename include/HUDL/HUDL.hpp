@@ -422,8 +422,7 @@ private:
         "Temp 3",
         "MC Stat",
         "Position",
-        "Torque"
-    };
+        "Torque"};
 };
 
 }// namespace HUDL
