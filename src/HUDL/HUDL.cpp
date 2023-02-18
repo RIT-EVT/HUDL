@@ -48,13 +48,13 @@ uint16_t HUDL::getObjectDictionarySize() {
 }
 
 void HUDL::updateLCD() const {
-//    for (int i = 0; i < 4; i++) {
-//        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
-//    }
-//    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total Voltage: %d\n\r", totalVoltage);
+    //    for (int i = 0; i < 4; i++) {
+    //        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
+    //    }
+    //    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total Voltage: %d\n\r", totalVoltage);
 
-//    unsigned long cob = CO_COBID_TPDO_DEFAULT(0) + MC_NODE_ID;
-//    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "COB: 0x%X\n\r", cob);
+    //    unsigned long cob = CO_COBID_TPDO_DEFAULT(0) + MC_NODE_ID;
+    //    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "COB: 0x%X\n\r", cob);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Status Word: 0x%X\n\r", statusWord);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Position Actual: 0x%X\n\r", positionActual);
