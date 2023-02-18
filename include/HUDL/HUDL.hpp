@@ -12,8 +12,6 @@
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
-
-
 namespace HUDL {
 
 /**

@@ -79,6 +79,9 @@ void HUDL::updateLCD() {
 //    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Torque Actual: 0x%X\n\r", torqueActual);
 //    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Velocity Value: 0x%X\n\r", velocityActual);
 //    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Dummy Data: 0x%X\n\r", rpdo4First32BitsDummyData);
+
+void HUDL::displayMap(uint8_t* bitmap) {
+    lcd.displayMap(bitmap);
 }
 
 }// namespace HUDL
