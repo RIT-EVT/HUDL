@@ -38,37 +38,6 @@ public:
     HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi);
 
     /**
-     * Writes data to the LCD to show on the screen
-     *
-     * @param[in] data being written to LCD
-     */
-    void dataWrite(uint8_t data);
-
-    /**
-     * Writes commands to the LCD to control the ST7565
-     *
-     * @param data being written for the command
-     */
-    void commWrite(uint8_t data);
-
-    /**
-     * Writes data to a single pixel
-     *
-     * @param[in] page is the page address to write data to
-     * @param[in] colUp is the first four bits of the column write
-     * @param[in] colLow is the last four bits of the column write
-     * @param[in] data is the data value to write
-     */
-    void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
-
-    /**
-     * Clears the screen
-     *
-     * @param[in] bitMap a pointer to the bitmap to be displayed
-     */
-    void clearLCD(const uint8_t* bitMap);
-
-    /**
      * Initializes LCD for use
      */
     void initLCD();
@@ -87,12 +56,10 @@ public:
      */
     uint16_t getObjectDictionarySize();
 
-    void displayMap(uint8_t* bitmap);
-
     /**
      * Updates the LCD display with values received from the CAN network
      */
-    void updateLCD() const;
+    void updateLCD();
 
 private:
     /**

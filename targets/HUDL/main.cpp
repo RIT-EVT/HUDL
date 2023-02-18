@@ -408,6 +408,8 @@ int main() {
         log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Unknown Error: %d\r\n", err);
     }
 
+    hudl.initLCD();
+
     while (1) {
         hudl.updateLCD();
 
