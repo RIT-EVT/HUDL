@@ -38,41 +38,46 @@ uint16_t HUDL::getObjectDictionarySize() {
 void HUDL::updateLCD() {
 //    lcd.writeText("Hello World", 1, 0, false);
     char tempOne[32];
-    std::sprintf(tempOne, "%lu C", *(this->thermTemps + 0));
+    std::sprintf(tempOne, "%d C", *(this->thermTemps + 0));
 
     char tempTwo[32];
-    std::sprintf(tempTwo, "%lu C", *(this->thermTemps + 1));
+    std::sprintf(tempTwo, "%d C", *(this->thermTemps + 1));
 
     char tempThree[32];
-    std::sprintf(tempThree, "%lu C", *(this->thermTemps + 2));
+    std::sprintf(tempThree, "%d C", *(this->thermTemps + 2));
 
     char tempFour[32];
-    std::sprintf(tempFour, "%lu C", *(this->thermTemps + 3));
+    std::sprintf(tempFour, "%d C", *(this->thermTemps + 3));
 
     char voltage[32];
-    std::sprintf(voltage, "%lu v", totalVoltage);
+    std::sprintf(voltage, "%d v", totalVoltage);
 
     char status[32];
-    std::sprintf(status, "%hu", statusWord);
+    std::sprintf(status, "0x%X", statusWord);
 
     char position[32];
-    std::sprintf(position, "%lu", positionActual);
+    std::sprintf(position, "0x%X", positionActual);
 
     char torque[32];
-    std::sprintf(torque, "%hu", torqueActual);
+    std::sprintf(torque, "0x%X", torqueActual);
 
     char velocity[32];
-    std::sprintf(velocity, "%hu", velocityActual);
+    std::sprintf(velocity, "0x%X", velocityActual);
 
     lcd.setTextForSection(0, voltage);
     lcd.setTextForSection(1, velocity);
-    //    lcd.setTextForSection(2, "3000");
+//    lcd.setTextForSection(2, "3000");
     lcd.setTextForSection(3, tempOne);
     lcd.setTextForSection(4, tempTwo);
     lcd.setTextForSection(5, tempThree);
     lcd.setTextForSection(6, status);
     lcd.setTextForSection(7, position);
     lcd.setTextForSection(8, torque);
+
+    for (int i = 0; i < 4; i++) {
+        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, *(this->thermTemps + i));
+    }
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total Voltage: %d\n\r", totalVoltage);
 
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Status Word: 0x%X\n\r", statusWord);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Position Actual: 0x%X\n\r", positionActual);
