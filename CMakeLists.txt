@@ -6,6 +6,8 @@ if(EVT_CORE_LOG_ENABLE)
 endif()
 cmake_minimum_required(VERSION 3.15)
 
+add_compile_definitions(CO_RPDO_N=50)
+
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 set(TARGET_DEV        "STM32F302x8")
 
