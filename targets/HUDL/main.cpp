@@ -136,8 +136,8 @@ int main() {
     }
 
     // Crashes the HUDL
-//    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
-//    log::LOGGER.setUART(&uart);
+    //    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    //    log::LOGGER.setUART(&uart);
 
     ///////////////////////////////////////////////////////////////////////////
     // Setup CAN configuration, this handles making drivers, applying settings.

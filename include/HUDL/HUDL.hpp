@@ -58,6 +58,7 @@ public:
      * Updates the LCD display with values received from the CAN network
      */
     void updateLCD();
+
 private:
     /**
      * reg_select PA_3

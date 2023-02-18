@@ -36,7 +36,7 @@ uint16_t HUDL::getObjectDictionarySize() {
 }
 
 void HUDL::updateLCD() {
-//    lcd.writeText("Hello World", 1, 0, false);
+    //    lcd.writeText("Hello World", 1, 0, false);
     char tempOne[32];
     std::sprintf(tempOne, "%d C", *(this->thermTemps + 0));
 
@@ -66,7 +66,7 @@ void HUDL::updateLCD() {
 
     lcd.setTextForSection(0, voltage);
     lcd.setTextForSection(1, velocity);
-//    lcd.setTextForSection(2, "3000");
+    //    lcd.setTextForSection(2, "3000");
     lcd.setTextForSection(3, tempOne);
     lcd.setTextForSection(4, tempTwo);
     lcd.setTextForSection(5, tempThree);
