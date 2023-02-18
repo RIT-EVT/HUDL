@@ -414,6 +414,18 @@ private:
         },
         CO_OBJ_DIR_ENDMARK,
     };
+
+    static constexpr char* SECTION_TITLES[9]{
+        "B Voltage",
+        "Velocity",
+        "RPM",
+        "Temp 1",
+        "Temp 2",
+        "Temp 3",
+        "MC Stat",
+        "Position",
+        "Torque"
+    };
 };
 
 }// namespace HUDL
