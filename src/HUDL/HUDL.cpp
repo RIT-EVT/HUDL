@@ -31,7 +31,7 @@ CO_OBJ_T* HUDL::getObjectDictionary() {
     return &objectDictionary[0];
 }
 
-uint16_t HUDL::getObjectDictionarySize() {
+uint16_t HUDL::getObjectDictionarySize() const {
     return OBJECT_DICTIONARY_SIZE;
 }
 
@@ -84,4 +84,5 @@ void HUDL::updateLCD() {
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Velocity Value: 0x%X\n\r", velocityActual);
     log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Dummy Data: 0x%X\n\r", rpdo4First32BitsDummyData);
 }
+
 }// namespace HUDL

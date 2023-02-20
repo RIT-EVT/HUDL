@@ -52,7 +52,7 @@ public:
      *
      * @return size of the Object Dictionary
      */
-    uint16_t getObjectDictionarySize();
+    uint16_t getObjectDictionarySize() const;
 
     /**
      * Updates the LCD display with values received from the CAN network
@@ -312,7 +312,7 @@ private:
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - statusWord
          * 2: Link to the second PD0 message - positionActual
-         * 2: Link to the third PD0 message - torqueActual
+         * 3: Link to the third PD0 message - torqueActual
          */
         {
             .Key = CO_KEY(0x1603, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),

@@ -6,6 +6,9 @@ if(EVT_CORE_LOG_ENABLE)
 endif()
 cmake_minimum_required(VERSION 3.15)
 
+# Increases the number of RPDOs that CAN Open can handle.
+# Also able to change the number of TPDOs if RPDO in the definition
+# is changed to TPDO (CO_TPDO_N=50)
 add_compile_definitions(CO_RPDO_N=50)
 
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
