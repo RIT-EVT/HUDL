@@ -38,7 +38,7 @@ uint16_t HUDL::getObjectDictionarySize() {
 void HUDL::updateLCD() {
     //    lcd.writeText("Hello World", 1, 0, false);
     char tempOne[32];
-    std::sprintf(tempOne, "%d C", *(this->thermTemps + 0));
+    std::sprintf(tempOne, "%d C", thermTemps[0]);
 
     char tempTwo[32];
     std::sprintf(tempTwo, "%d C", *(this->thermTemps + 1));
