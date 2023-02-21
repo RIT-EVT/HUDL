@@ -70,9 +70,21 @@ private:
 
     uint32_t thermTemps[4] = {};
 
-    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 30;
+    /** The status word provided by the MC node over CAN. Found in the first 16 bits of the 1st PDO coming from the MC. */
+    uint16_t statusWord = 0;
+    /** The position actual value provided by the MC node over CAN. Found in the middle 32 bits of the 1st PDO coming from the MC. */
+    uint32_t positionActual = 0;
+    /** The torque actual value provided by the MC node over CAN. Found in the last 16 bits of the 1st PDO coming from the MC. */
+    uint16_t torqueActual = 0;
+
+    uint16_t velocityActual = 0;
+
+    uint32_t rpdo4First32BitsDummyData = 0;
+
+    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 47;
     static constexpr uintptr_t TMS_NODE_ID = 0x08;
     static constexpr uintptr_t BMS_NODE_ID = 0x05;
+    static constexpr uintptr_t MC_NODE_ID = 0x01;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
@@ -193,6 +205,49 @@ private:
         },
 
         /**
+         * RPDO3 settings
+         * 0: RPDO number in index and total number of sub indexes.
+         * 1: The COB-ID to receive PDOs from.
+         * 2: transmission trigger
+         */
+        {
+            .Key = CO_KEY(0x1403, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 3,
+        },
+        {
+            .Key = CO_KEY(0x1403, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + MC_NODE_ID,
+        },
+        {
+            .Key = CO_KEY(0x1403, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 0xFE,
+        },
+        /**
+         * RPDO4 settings
+         * 0: RPDO number in index and total number of sub indexes.
+         * 1: The COB-ID to receive PDOs from.
+         * 2: transmission trigger
+         */
+        {
+            .Key = CO_KEY(0x1404, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 3,
+        },
+        {
+            .Key = CO_KEY(0x1404, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3) + MC_NODE_ID,
+        },
+        {
+            .Key = CO_KEY(0x1404, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 0xFE,
+        },
+
+        /**
          * RPDO0 mapping, determines the PDO messages to receive when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - tempOne
@@ -253,8 +308,57 @@ private:
         },
 
         /**
+         * RPDO3 mapping, determines the PDO messages to receive when RPDO3 is triggered
+         * 0: The number of PDO message associated with the RPDO
+         * 1: Link to the first PDO message - statusWord
+         * 2: Link to the second PD0 message - positionActual
+         * 3: Link to the third PD0 message - torqueActual
+         */
+        {
+            .Key = CO_KEY(0x1603, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 3,
+        },
+        {
+            .Key = CO_KEY(0x1603, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2103, 0, 16),
+        },
+        {
+            .Key = CO_KEY(0x1603, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2103, 1, 32),
+        },
+        {
+            .Key = CO_KEY(0x1603, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2103, 2, 16),
+        },
+
+        /**
+         * RPDO4 mapping, determines the PDO messages to receive when RPDO4 is triggered
+         * 0: The number of PDO message associated with the RPDO
+         * 1: Link to the first PDO message - empty value
+         * 2: Link to the second PDO message - velocityActual
+         */
+        {
+            .Key = CO_KEY(0x1604, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = (uintptr_t) 2,
+        },
+        {
+            .Key = CO_KEY(0x1604, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2104, 0, 32),
+        },
+        {
+            .Key = CO_KEY(0x1604, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2104, 1, 32),
+        },
+        /**
          * User defined data. Put elements that can be accessed via SDO
-         * and depdning on the configuration PDO
+         * and depending on the configuration PDO
          */
         {
             .Key = CO_KEY(0x2100, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
@@ -281,19 +385,43 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) &totalVoltage,
         },
-
+        {
+            .Key = CO_KEY(0x2103, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &statusWord,
+        },
+        {
+            .Key = CO_KEY(0x2103, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &positionActual,
+        },
+        {
+            .Key = CO_KEY(0x2103, 2, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &torqueActual,
+        },
+        {
+            .Key = CO_KEY(0x2104, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &rpdo4First32BitsDummyData,
+        },
+        {
+            .Key = CO_KEY(0x2104, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &velocityActual,
+        },
         CO_OBJ_DIR_ENDMARK,
     };
 
     static constexpr char* SECTION_TITLES[9]{
         "B Voltage",
-        "Speed",
+        "Velocity",
         "RPM",
         "Temp 1",
         "Temp 2",
         "Temp 3",
-        "Status 1",
-        "Pre Stat",
+        "MC Stat",
+        "Position",
         "Torque"};
 };
 

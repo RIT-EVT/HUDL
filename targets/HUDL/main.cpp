@@ -131,7 +131,13 @@ int main() {
         log::LOGGER.log(log::Logger::LogLevel::ERROR, "Failed to connect to CAN network\r\n");
 
         return 1;
+    } else {
+        log::LOGGER.log(log::Logger::LogLevel::INFO, "Connected to CAN network\r\n");
     }
+
+    // Crashes the HUDL
+    //    IO::UART& uart = IO::getUART<IO::Pin::UART_TX, IO::Pin::UART_RX>(9600);
+    //    log::LOGGER.setUART(&uart);
 
     ///////////////////////////////////////////////////////////////////////////
     // Setup CAN configuration, this handles making drivers, applying settings.

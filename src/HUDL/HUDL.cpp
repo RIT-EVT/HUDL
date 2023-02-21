@@ -36,30 +36,46 @@ uint16_t HUDL::getObjectDictionarySize() const {
 }
 
 void HUDL::updateLCD() {
-    char tempOne[32];
-    std::sprintf(tempOne, "%lu C", *(this->thermTemps + 0));
-
-    char tempTwo[32];
-    std::sprintf(tempTwo, "%lu C", *(this->thermTemps + 1));
-
-    char tempThree[32];
-    std::sprintf(tempThree, "%lu C", *(this->thermTemps + 2));
-
-    char tempFour[32];
-    std::sprintf(tempFour, "%lu C", *(this->thermTemps + 3));
+    char temps[32][4];
+    for (int i = 0; i < sizeof(thermTemps) / sizeof(uint32_t); i++) {
+        std::sprintf(temps[i], "%d C", thermTemps[i]);
+    }
 
     char voltage[32];
-    std::sprintf(voltage, "%lu v", totalVoltage);
+    std::sprintf(voltage, "%d v", totalVoltage);
+
+    char status[32];
+    std::sprintf(status, "0x%X", statusWord);
+
+    char position[32];
+    std::sprintf(position, "0x%X", positionActual);
+
+    char torque[32];
+    std::sprintf(torque, "0x%X", torqueActual);
+
+    char velocity[32];
+    std::sprintf(velocity, "0x%X", velocityActual);
 
     lcd.setTextForSection(0, voltage);
-    //    setTextForSection(2g "25 MPH");
-    //    setTextForSection(2, "3000");
-    lcd.setTextForSection(3, tempOne);
-    lcd.setTextForSection(4, tempTwo);
-    lcd.setTextForSection(5, tempThree);
-    //    setTextForSection(6, "ON");
-    //    setTextForSection(7, "Ready");
-    //    setTextForSection(8, "100 NM");
+    lcd.setTextForSection(1, velocity);
+    lcd.setTextForSection(2, "3000");
+    lcd.setTextForSection(3, temps[0]);
+    lcd.setTextForSection(4, temps[1]);
+    lcd.setTextForSection(5, temps[2]);
+    lcd.setTextForSection(6, status);
+    lcd.setTextForSection(7, position);
+    lcd.setTextForSection(8, torque);
+
+    for (int i = 0; i < sizeof(thermTemps) / sizeof(uint32_t); i++) {
+        log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Temp %d: %d\n\r", i, thermTemps[i]);
+    }
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Total Voltage: %d\n\r", totalVoltage);
+
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Status Word: 0x%X\n\r", statusWord);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Position Actual: 0x%X\n\r", positionActual);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Torque Actual: 0x%X\n\r", torqueActual);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Velocity Value: 0x%X\n\r", velocityActual);
+    log::LOGGER.log(log::Logger::LogLevel::DEBUG, "Dummy Data: 0x%X\n\r", rpdo4First32BitsDummyData);
 }
 
 }// namespace HUDL
