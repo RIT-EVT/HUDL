@@ -37,7 +37,7 @@ uint16_t HUDL::getObjectDictionarySize() const {
 
 void HUDL::updateLCD() {
     char temps[32][4];
-    for(int i = 0; i < sizeof(thermTemps) / sizeof(uint32_t); i ++) {
+    for (int i = 0; i < sizeof(thermTemps) / sizeof(uint32_t); i++) {
         std::sprintf(temps[i], "%d C", thermTemps[i]);
     }
 
