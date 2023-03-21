@@ -59,32 +59,33 @@ public:
      */
     void updateLCD();
 
-private:
     /**
      * reg_select PA_3
      * reset      PB_3
      * cs         PB_12
      */
     DEV::LCD lcd;
+
+    static constexpr uintptr_t TMS_NODE_ID = 0x08;
+    static constexpr uintptr_t BMS_NODE_ID = 0x05;
+    static constexpr uintptr_t MC_NODE_ID = 0x01;
+private:
     uint32_t totalVoltage = 0;
 
     uint32_t thermTemps[4] = {};
 
     /** The status word provided by the MC node over CAN. Found in the first 16 bits of the 1st PDO coming from the MC. */
     uint16_t statusWord = 0;
-    /** The position actual value provided by the MC node over CAN. Found in the middle 32 bits of the 1st PDO coming from the MC. */
-    uint32_t positionActual = 0;
-    /** The torque actual value provided by the MC node over CAN. Found in the last 16 bits of the 1st PDO coming from the MC. */
+
+    /** The torque actual value provided by the MC node over CAN. Found in the first 16 bits of the 4th PDO coming from the MC. */
     uint16_t torqueActual = 0;
 
+    /** The velocity actual value provided by the MC node over CAN. Found after the first 16 bits of the 1st PDO coming from the MC. */
     uint16_t velocityActual = 0;
 
-    uint32_t rpdo4First32BitsDummyData = 0;
+    uint32_t actualPosition = 0;
 
-    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 47;
-    static constexpr uintptr_t TMS_NODE_ID = 0x08;
-    static constexpr uintptr_t BMS_NODE_ID = 0x05;
-    static constexpr uintptr_t MC_NODE_ID = 0x01;
+    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 43;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
@@ -239,14 +240,13 @@ private:
         {
             .Key = CO_KEY(0x1404, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(3) + MC_NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + MC_NODE_ID,
         },
         {
             .Key = CO_KEY(0x1404, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 0xFE,
         },
-
         /**
          * RPDO0 mapping, determines the PDO messages to receive when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
@@ -311,13 +311,12 @@ private:
          * RPDO3 mapping, determines the PDO messages to receive when RPDO3 is triggered
          * 0: The number of PDO message associated with the RPDO
          * 1: Link to the first PDO message - statusWord
-         * 2: Link to the second PD0 message - positionActual
-         * 3: Link to the third PD0 message - torqueActual
+         * 2: Link to the second PD0 message - actualPosition
          */
         {
             .Key = CO_KEY(0x1603, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 3,
+            .Data = (uintptr_t) 2,
         },
         {
             .Key = CO_KEY(0x1603, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
@@ -329,32 +328,20 @@ private:
             .Type = nullptr,
             .Data = CO_LINK(0x2103, 1, 32),
         },
-        {
-            .Key = CO_KEY(0x1603, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = CO_LINK(0x2103, 2, 16),
-        },
-
         /**
          * RPDO4 mapping, determines the PDO messages to receive when RPDO4 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - empty value
-         * 2: Link to the second PDO message - velocityActual
+         * 1: Link to the first PDO message - torqueActual Torque 16 bit 1/1000ths nominal current
          */
         {
             .Key = CO_KEY(0x1604, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 2,
+            .Data = (uintptr_t) 1,
         },
         {
             .Key = CO_KEY(0x1604, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2104, 0, 32),
-        },
-        {
-            .Key = CO_KEY(0x1604, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = CO_LINK(0x2104, 1, 32),
+            .Data = CO_LINK(0x2104, 0, 16),
         },
         /**
          * User defined data. Put elements that can be accessed via SDO
@@ -393,22 +380,12 @@ private:
         {
             .Key = CO_KEY(0x2103, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
             .Type = nullptr,
-            .Data = (uintptr_t) &positionActual,
+            .Data = (uintptr_t) &actualPosition,
         },
         {
-            .Key = CO_KEY(0x2103, 2, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2104, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &torqueActual,
-        },
-        {
-            .Key = CO_KEY(0x2104, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
-            .Type = nullptr,
-            .Data = (uintptr_t) &rpdo4First32BitsDummyData,
-        },
-        {
-            .Key = CO_KEY(0x2104, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
-            .Type = nullptr,
-            .Data = (uintptr_t) &velocityActual,
         },
         CO_OBJ_DIR_ENDMARK,
     };

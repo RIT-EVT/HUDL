@@ -16,6 +16,7 @@
 
 #include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <HUDL/HUDL.hpp>
+#include <cstdio>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -103,7 +104,6 @@ int main() {
 
     // Initialize the timer
     DEV::Timerf302x8 timer(TIM2, 100);
-    timer.stopTimer();
 
     //create the RPDO node
     IO::GPIO* devices[deviceCount];
@@ -114,6 +114,13 @@ int main() {
     devices[0]->writePin(IO::GPIO::State::HIGH);
     auto& hudl_spi = IO::getSPI<IO::Pin::SPI_SCK, IO::Pin::SPI_MOSI>(
         devices, deviceCount);
+    /*
+    IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_7>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    devices[0] = &IO::getGPIO<IO::Pin::PB_11>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    devices[0]->writePin(IO::GPIO::State::HIGH);
+     */
+
 
     hudl_spi.configureSPI(SPI_SPEED, SPI_MODE0, SPI_MSB_FIRST);
 
@@ -122,6 +129,13 @@ int main() {
     // Reserved memory for CANopen stack usage
     uint8_t sdoBuffer[1][CO_SDO_BUF_BYTE];
     CO_TMR_MEM appTmrMem[4];
+
+    // Adds can filtering to only allow messages from IDs 1, 5, and 8.
+    can.addCANFilter(HUDL::HUDL::MC_NODE_ID, 0b0000111111100000, 2);
+    can.addCANFilter(HUDL::HUDL::TMS_NODE_ID, 0b0000111111100000, 3);
+    can.addCANFilter(HUDL::HUDL::BMS_NODE_ID, 0b0000111111100000, 4);
+
+    can.enableEmergencyFilter(ENABLE);
 
     // Attempt to join the CAN network
     IO::CAN::CANStatus result = can.connect();
@@ -186,7 +200,17 @@ int main() {
 
     hudl.initLCD();
 
+    uint8_t number = 0;
+
     while (1) {
+        hudl.lcd.clearArea(64, 8, 0, 0);
+        char buffer[128] = {};
+        std::sprintf(buffer, "%d", number);
+
+        hudl.lcd.writeText(buffer, 0, 0, true);
+
+        number++;
+
         hudl.updateLCD();
 
         CONodeProcess(&canNode);
