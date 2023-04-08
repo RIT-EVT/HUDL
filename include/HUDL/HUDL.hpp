@@ -70,9 +70,13 @@ public:
     static constexpr uintptr_t BMS_NODE_ID = 0x05;
     static constexpr uintptr_t MC_NODE_ID = 0x01;
 private:
-    uint32_t totalVoltage = 0;
+    uint16_t dummyValue = 0;
 
-    uint32_t thermTemps[4] = {};
+    uint16_t totalVoltage = 0;
+
+    uint16_t mcVoltage = 0;
+
+    uint16_t thermTemps[4] = {};
 
     /** The status word provided by the MC node over CAN. Found in the first 16 bits of the 1st PDO coming from the MC. */
     uint16_t statusWord = 0;
@@ -80,12 +84,9 @@ private:
     /** The torque actual value provided by the MC node over CAN. Found in the first 16 bits of the 4th PDO coming from the MC. */
     uint16_t torqueActual = 0;
 
-    /** The velocity actual value provided by the MC node over CAN. Found after the first 16 bits of the 1st PDO coming from the MC. */
-    uint16_t velocityActual = 0;
-
     uint32_t actualPosition = 0;
 
-    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 43;
+    static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 37;
 
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         // Sync ID, defaults to 0x80
@@ -140,7 +141,10 @@ private:
         },
 
         /**
-         * RPDO0 settings
+         * *** START RPDO SETTINGS ***
+         */
+        /**
+         * TMS RPDO 0
          * 0: RPDO number in index and total number of sub indexes.
          * 1: The COB-ID to receive PDOs from.
          * 2: transmission trigger
@@ -160,9 +164,8 @@ private:
             .Type = nullptr,
             .Data = (uintptr_t) 0xFE,
         },
-
         /**
-         * RPDO1 settings
+         * Motor Controller RPDO 0
          * 0: RPDO number in index and total number of sub indexes.
          * 1: The COB-ID to receive PDOs from.
          * 2: transmission trigger
@@ -175,16 +178,15 @@ private:
         {
             .Key = CO_KEY(0x1401, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_COBID_TPDO_DEFAULT(1) + TMS_NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + MC_NODE_ID,
         },
         {
             .Key = CO_KEY(0x1401, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 0xFE,
         },
-
         /**
-         * RPDO2 settings
+         *  Motor Controller RPDO 1
          * 0: RPDO number in index and total number of sub indexes.
          * 1: The COB-ID to receive PDOs from.
          * 2: transmission trigger
@@ -197,202 +199,156 @@ private:
         {
             .Key = CO_KEY(0x1402, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + BMS_NODE_ID,
+            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(1) + MC_NODE_ID,
         },
         {
             .Key = CO_KEY(0x1402, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
             .Data = (uintptr_t) 0xFE,
         },
-
         /**
-         * RPDO3 settings
-         * 0: RPDO number in index and total number of sub indexes.
-         * 1: The COB-ID to receive PDOs from.
-         * 2: transmission trigger
-         */
-        {
-            .Key = CO_KEY(0x1403, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 3,
-        },
-        {
-            .Key = CO_KEY(0x1403, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(0) + MC_NODE_ID,
-        },
-        {
-            .Key = CO_KEY(0x1403, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0xFE,
-        },
-        /**
-         * RPDO4 settings
-         * 0: RPDO number in index and total number of sub indexes.
-         * 1: The COB-ID to receive PDOs from.
-         * 2: transmission trigger
-         */
-        {
-            .Key = CO_KEY(0x1404, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 3,
-        },
-        {
-            .Key = CO_KEY(0x1404, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) CO_COBID_TPDO_DEFAULT(2) + MC_NODE_ID,
-        },
-        {
-            .Key = CO_KEY(0x1404, 2, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 0xFE,
-        },
-        /**
-         * RPDO0 mapping, determines the PDO messages to receive when RPDO0 is triggered
+         * TMS RPDO 0
+         * Determines the PDO messages to receive when RPDO0 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - tempOne
-         * 2: Link to the second PDO message - tempTwo
+         * 1: tempOne
+         * 2: tempTwo
+         * 3: tempThree
+         * 4: tempFour
          */
         {
             .Key = CO_KEY(0x1600, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 2,
+            .Data = (uintptr_t) 4,
         },
         {
             .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 0, 32),
+            .Data = CO_LINK(0x2100, 0, 16), // Temperature One
         },
         {
             .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 1, 32),
+            .Data = CO_LINK(0x2100, 1, 16), // Temperature Two
         },
-
+        {
+            .Key = CO_KEY(0x1600, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2100, 2, 16), // Temperature Three
+        },
+        {
+            .Key = CO_KEY(0x1600, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2100, 3, 16), // Temperature Four
+        },
         /**
-         * RPDO1 mapping, determines the PDO messages to receive when RPDO1 is triggered
+         * Motor Controller RPDO 1
+         * Determines the PDO messages to receive when RPDO3 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - tempThree
-         * 2: Link to the second PDO message - tempFour
+         * 1: statusWord
+         * 2: positionActual
+         * 3: torqueActual
          */
         {
             .Key = CO_KEY(0x1601, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 2,
+            .Data = (uintptr_t) 3,
         },
         {
             .Key = CO_KEY(0x1601, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 2, 32),
+            .Data = CO_LINK(0x2101, 0, 16),
         },
         {
             .Key = CO_KEY(0x1601, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 3, 32),
+            .Data = CO_LINK(0x2101, 1, 32),
         },
-
+        {
+            .Key = CO_KEY(0x1601, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Type = nullptr,
+            .Data = CO_LINK(0x2101, 2, 16),
+        },
         /**
-         * RPDO2 mapping, determines the PDO messages to receive when RPDO1 is triggered
+         * Motor Controller RPDO 2
+         * Determines the PDO messages to receive when RPDO4 is triggered
          * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - totalVoltage
+         * 1: Dummy Value
+         * 2: Battery Voltage
          */
         {
             .Key = CO_KEY(0x1602, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = (uintptr_t) 1,
+            .Data = (uintptr_t) 2,
         },
         {
             .Key = CO_KEY(0x1602, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2101, 0, 32),
-        },
-
-        /**
-         * RPDO3 mapping, determines the PDO messages to receive when RPDO3 is triggered
-         * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - statusWord
-         * 2: Link to the second PD0 message - actualPosition
-         */
-        {
-            .Key = CO_KEY(0x1603, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 2,
+            .Data = CO_LINK(0x2102, 0, 16),
         },
         {
-            .Key = CO_KEY(0x1603, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
+            .Key = CO_KEY(0x1602, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2103, 0, 16),
-        },
-        {
-            .Key = CO_KEY(0x1603, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = CO_LINK(0x2103, 1, 32),
-        },
-        /**
-         * RPDO4 mapping, determines the PDO messages to receive when RPDO4 is triggered
-         * 0: The number of PDO message associated with the RPDO
-         * 1: Link to the first PDO message - torqueActual Torque 16 bit 1/1000ths nominal current
-         */
-        {
-            .Key = CO_KEY(0x1604, 0, CO_UNSIGNED8 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = (uintptr_t) 1,
-        },
-        {
-            .Key = CO_KEY(0x1604, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
-            .Type = nullptr,
-            .Data = CO_LINK(0x2104, 0, 16),
+            .Data = CO_LINK(0x2102, 1, 16),
         },
         /**
          * User defined data. Put elements that can be accessed via SDO
          * and depending on the configuration PDO
          */
+        /* These data values assign TMU RPDO 0 to the 4 thermal temperatures. */
         {
-            .Key = CO_KEY(0x2100, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2100, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[0],
         },
         {
-            .Key = CO_KEY(0x2100, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2100, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[1],
         },
         {
-            .Key = CO_KEY(0x2100, 2, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2100, 2, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[2],
         },
         {
-            .Key = CO_KEY(0x2100, 3, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2100, 3, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &thermTemps[3],
         },
+        /* These data values assign Motor Controller RPDO 0 to Status Word, Actual Position, and Torque Actual. */
         {
-            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED32 | CO_OBJ___PRW),
-            .Type = nullptr,
-            .Data = (uintptr_t) &totalVoltage,
-        },
-        {
-            .Key = CO_KEY(0x2103, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2101, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &statusWord,
         },
         {
-            .Key = CO_KEY(0x2103, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2101, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &actualPosition,
         },
         {
-            .Key = CO_KEY(0x2104, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2101, 2, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &torqueActual,
         },
+        /* These data values assign Motor Controller RPDO 1 to the Total Voltage, and then a dummy value. */
+        {
+            .Key = CO_KEY(0x2102, 0, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &dummyValue,
+        },
+        {
+            .Key = CO_KEY(0x2102, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
+            .Type = nullptr,
+            .Data = (uintptr_t) &totalVoltage,
+        },
+
         CO_OBJ_DIR_ENDMARK,
     };
 
     static constexpr char* SECTION_TITLES[9]{
-        "B Voltage",
-        "Velocity",
+        "Voltage",
+        "MPH",
         "RPM",
         "Temp 1",
         "Temp 2",

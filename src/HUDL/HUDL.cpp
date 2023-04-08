@@ -36,36 +36,48 @@ uint16_t HUDL::getObjectDictionarySize() const {
 }
 
 void HUDL::updateLCD() {
-    char temps[32][4];
-    for (int i = 0; i < sizeof(thermTemps) / sizeof(uint32_t); i++) {
-        std::sprintf(temps[i], "%d C", thermTemps[i]);
-    }
+    char tempOne[16];
+    std::sprintf(tempOne, "%hu.%hu C", thermTemps[0] / 100, thermTemps[0] % 100);
 
-    // Calcaultate RPM
-    const uint8_t gearRatio = 6;
-    // ((RPM / Gear Ratio) * Tire Diameter * PI * 60) / 63,360 -> MPH
+    char tempTwo[16];
+    std::sprintf(tempTwo, "%hu.%hu C", thermTemps[1] / 100, thermTemps[1] % 100);
+
+    char tempThree[16];
+    std::sprintf(tempThree, "%hu.%hu C", thermTemps[2] / 100, thermTemps[2] % 100);
+
+    // Calculate RPM
+    actualPosition = ~actualPosition + 1; // Update the RPM to be correctly formatted
+
+    uint32_t mph = actualPosition * (27 * 60 * 314) / 433 / 63360;
 
     char voltage[32];
-    std::sprintf(voltage, "%d v", totalVoltage);
+    std::sprintf(voltage, "%hu v", totalVoltage);
 
     char rpm[32];
-    std::sprintf(rpm, "0x%X", ~actualPosition);
+    std::sprintf(rpm, "%lu", actualPosition);
 
-    char status[32];
-    std::sprintf(status, "0x%X", statusWord);
+    char status[16];
 
-    char torque[32];
-    std::sprintf(torque, "0x%X", torqueActual);
+    if (statusWord == 0x21) {
+        std::sprintf(status, "STOP");
+    } else if (statusWord == 0x27) {
+        std::sprintf(status, "GO");
+    } else {
+        std::sprintf(status, "0x%x", statusWord);
+    }
 
-//    char velocity[32];
-//    std::sprintf(velocity, "0x%X", velocityActual);
+    char torque[16];
+    std::sprintf(torque, "%hu", torqueActual);
+
+    char mphText[32];
+    std::sprintf(mphText, "%lu", mph);
 
     lcd.setTextForSection(0, voltage);
-    lcd.setTextForSection(1, "NULL");
+    lcd.setTextForSection(1, mphText);
     lcd.setTextForSection(2, rpm);
-    lcd.setTextForSection(3, temps[0]);
-    lcd.setTextForSection(4, temps[1]);
-    lcd.setTextForSection(5, temps[2]);
+    lcd.setTextForSection(3, tempOne);
+    lcd.setTextForSection(4, tempTwo);
+    lcd.setTextForSection(5, tempThree);
     lcd.setTextForSection(6, status);
     lcd.setTextForSection(7, "NULL");
     lcd.setTextForSection(8, torque);
