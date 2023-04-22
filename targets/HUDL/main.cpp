@@ -108,7 +108,7 @@ int main() {
     can.addIRQHandler(canInterrupt, reinterpret_cast<void*>(&canOpenQueue));
 
     // Initialize the timer
-    DEV::Timerf302x8 timer(TIM2, 100);
+    DEV::Timerf302x8 timer(TIM2, 160);
 
     //create the RPDO node
     IO::GPIO* devices[deviceCount];
@@ -118,10 +118,15 @@ int main() {
 //    IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
 //    devices[0] = &IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
     // HUDL 1.1
+//    IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_7>(EVT::core::IO::GPIO::Direction::OUTPUT);
+//    devices[0] = &IO::getGPIO<IO::Pin::PB_11>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    // HUDL 1.2
     IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_7>(EVT::core::IO::GPIO::Direction::OUTPUT);
-    devices[0] = &IO::getGPIO<IO::Pin::PB_11>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    devices[0] = &IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
 
     devices[0]->writePin(IO::GPIO::State::HIGH);
+//    auto& hudl_spi = IO::getSPI<IO::Pin::SPI_SCK, IO::Pin::SPI_MOSI>(
+//        devices, deviceCount);
     auto& hudl_spi = IO::getSPI<IO::Pin::SPI_SCK, IO::Pin::SPI_MOSI>(
         devices, deviceCount);
 
@@ -155,7 +160,6 @@ int main() {
     //test that the board is connected to the can network
     if (result != IO::CAN::CANStatus::OK) {
         log::LOGGER.log(log::Logger::LogLevel::ERROR, "Failed to connect to CAN network\r\n");
-
         return 1;
     } else {
         log::LOGGER.log(log::Logger::LogLevel::INFO, "Connected to CAN network\r\n");
