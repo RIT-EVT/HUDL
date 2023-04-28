@@ -72,7 +72,6 @@ public:
 private:
     enum CurrentPage {
         PAGE_1,
-        PAGE_2,
         ERROR_PAGE
     };
 
@@ -85,7 +84,6 @@ private:
 
     CurrentPage currentHUDLScreen = PAGE_1;
     bool setHeaders = false;
-    uint8_t headerCounter = 0;
 
     unsigned char evtBitMap[1024] = {
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,

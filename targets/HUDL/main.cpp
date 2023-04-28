@@ -2,19 +2,16 @@
  * This is the main code running on the HUDL responsible for displaying
  * information that other boards that broadcast through the CAN network
  */
-#include <stdint.h>
-
 #include <Canopen/co_core.h>
 #include <Canopen/co_tmr.h>
 #include <EVT/dev/Timer.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
-#include <EVT/io/manager.hpp>
+#include <EVT/manager.hpp>
 #include <EVT/io/pin.hpp>
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
-#include <EVT/dev/platform/f3xx/f302x8/Timerf302x8.hpp>
 #include <HUDL/HUDL.hpp>
 #include <cstdio>
 
@@ -97,7 +94,7 @@ extern "C" void HAL_CAN_RxFifo1FullCallback(CAN_HandleTypeDef *hcan) {
 
 int main() {
     // Initialize system
-    IO::init();
+    EVT::core::platform::init();
 
     // Will store CANopen messages that will be populated by the EVT-core CAN
     // interrupt
@@ -108,7 +105,7 @@ int main() {
     can.addIRQHandler(canInterrupt, reinterpret_cast<void*>(&canOpenQueue));
 
     // Initialize the timer
-    DEV::Timerf302x8 timer(TIM2, 160);
+    DEV::Timerf3xx timer(TIM2, 160);
 
     //create the RPDO node
     IO::GPIO* devices[deviceCount];
