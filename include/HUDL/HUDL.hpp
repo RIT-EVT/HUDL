@@ -68,6 +68,7 @@ public:
 
     static constexpr uintptr_t TMS_NODE_ID = 0x08;
     static constexpr uintptr_t MC_NODE_ID = 0x01;
+
 private:
     enum CurrentPage {
         PAGE_1,
@@ -154,7 +155,7 @@ private:
     uint16_t dummyValue = 0;
 
     uint16_t totalVoltage = 0;
-    
+
     uint16_t thermTemps[4] = {};
 
     /** The status word provided by the MC node over CAN. Found in the first 16 bits of the 1st PDO coming from the MC. */
@@ -310,22 +311,22 @@ private:
         {
             .Key = CO_KEY(0x1600, 1, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 0, 16), // Temperature One
+            .Data = CO_LINK(0x2100, 0, 16),// Temperature One
         },
         {
             .Key = CO_KEY(0x1600, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 1, 16), // Temperature Two
+            .Data = CO_LINK(0x2100, 1, 16),// Temperature Two
         },
         {
             .Key = CO_KEY(0x1600, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 2, 16), // Temperature Three
+            .Data = CO_LINK(0x2100, 2, 16),// Temperature Three
         },
         {
             .Key = CO_KEY(0x1600, 4, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2100, 3, 16), // Temperature Four
+            .Data = CO_LINK(0x2100, 3, 16),// Temperature Four
         },
         /**
          * Motor Controller RPDO 1
