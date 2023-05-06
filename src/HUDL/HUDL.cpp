@@ -54,7 +54,7 @@ void HUDL::updateLCD() {
        }
 
        // Set the battery voltage
-       char voltage[8];
+       char voltage[9];
        std::sprintf(voltage, "%hu.%hu v", totalVoltage / 10, totalVoltage % 10);
        dataForCorner(TOP_LEFT, voltage);
 
@@ -65,7 +65,7 @@ void HUDL::updateLCD() {
                highestTemp = temp;
            }
        }
-       char temp[8];
+       char temp[9];
        std::sprintf(temp, "%hu.%hu C", thermTemps[0] / 100, thermTemps[0] % 100);
 
        dataForCorner(TOP_RIGHT, temp);
@@ -83,8 +83,10 @@ void HUDL::updateLCD() {
        } else if (statusWord == 0x27) {
            std::sprintf(status, "GO");
        } else {
-           std::sprintf(status, "UNK %x", statusWord);
+           std::sprintf(errorString, "There was an error with the Motor Controller: Unknown Error %x", statusWord);
+           currentHUDLScreen = ERROR_PAGE;
        }
+
        dataForCorner(BOTTOM_RIGHT, status);
    }
    break;
@@ -93,7 +95,7 @@ void HUDL::updateLCD() {
        if (!setHeaders) {
            lcd.clearLCD();
        }
-       writeError("This is a really really really really really really long error that really really really broke the bike.");
+       writeError(errorString);
        break;
    }
    }
@@ -113,7 +115,7 @@ void HUDL::headerForCorner(HUDL::Corner corner, const char* text) {
    sectionColumn += padding;
 
    // Write the text to the screen under the section header.
-   writeLargeText(text, sectionPage, sectionColumn, false);
+   lcd.writeLargeText(text, sectionPage, sectionColumn, false);
 }
 
 void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
@@ -130,116 +132,45 @@ void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
    sectionColumn += padding;
 
    // Write the text to the screen under the section header.
-   writeLargeText(text, sectionPage, sectionColumn, false);
+   lcd.writeLargeText(text, sectionPage, sectionColumn, false);
 }
 
-uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
-   switch (corner) {
-   case TOP_LEFT: return 0;
-   case TOP_RIGHT: return 64;
-   case BOTTOM_LEFT: return 0;
-   case BOTTOM_RIGHT: return 64;
-   }
-}
-
-uint8_t HUDL::wrapForCorner(HUDL::Corner corner) {
-   switch (corner) {
-   case TOP_LEFT: return 64;
-   case TOP_RIGHT: return 128;
-   case BOTTOM_LEFT: return 64;
-   case BOTTOM_RIGHT: return 128;
-   }
-}
-
-uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
-   switch (corner) {
-   case TOP_LEFT: return 0;
-   case TOP_RIGHT: return 0;
-   case BOTTOM_LEFT: return 4;
-   case BOTTOM_RIGHT: return 4;
-   }
-}
-
-void HUDL::writeLargeText(const char* text, uint8_t page, uint8_t column, bool wrapText) {
-   for (uint8_t x = 0; x < strlen(text); x++) {
-       // Get the ASCII value of the character.
-       uint8_t fontIndex = text[x];
-
-       // Create the character that we need to write to the screen.
-       unsigned char characterMap[16] = {
-           BitmapFont::font6x13[fontIndex][0],
-           BitmapFont::font6x13[fontIndex][1],
-           BitmapFont::font6x13[fontIndex][2],
-           BitmapFont::font6x13[fontIndex][3],
-           BitmapFont::font6x13[fontIndex][4],
-           BitmapFont::font6x13[fontIndex][5],
-           BitmapFont::font6x13[fontIndex][6],
-           BitmapFont::font6x13[fontIndex][7],
-           BitmapFont::font6x13[fontIndex][8],
-           BitmapFont::font6x13[fontIndex][9],
-           BitmapFont::font6x13[fontIndex][10],
-           BitmapFont::font6x13[fontIndex][11],
-           BitmapFont::font6x13[fontIndex][12],
-           0b00000000,
-           0b00000000,
-           0b00000000,
-       };
-
-       if (column >= 128) {
-           return;
-       }
-
-       // Display the character bit map at the calculated page and column.
-       lcd.displayBitMapInArea(characterMap, 8, 16, page, column, 2);
-       column += 8;// Advance the column for the next character.
-
-       // If we need to wrap text, move the page forward and the column to 0.
-       if (wrapText && column >= 128) {
-           page += 1;
-           column = 0;
-       }
-   }
-}
-
-void HUDL::writeSmallText(const char* text, uint8_t page, uint8_t column, bool wrapText) {
-   for (uint8_t x = 0; x < strlen(text); x++) {
-       // Get the ASCII value of the character.
-       uint8_t fontIndex = text[x];
-
-       // Create the character that we need to write to the screen.
-       unsigned char characterMap[4] = {
-           BitmapFont::font4x6[fontIndex][0],
-           BitmapFont::font4x6[fontIndex][1],
-           BitmapFont::font4x6[fontIndex][2],
-           BitmapFont::font4x6[fontIndex][3],
-       };
-
-       if (column >= 128) {
-           return;
-       }
-
-       // Display the character bit map at the calculated page and column.
-       lcd.displayBitMapInArea(characterMap, 4, 8, page, column, 1);
-       column += 4;// Advance the column for the next character.
-
-       // If we need to wrap text, move the page forward and the column to 0.
-       if (wrapText && column >= 128) {
-           page++;
-           column = 0;
-       }
-   }
-
-}
 void HUDL::writeError(const char* text) {
    // Calculate the padding to center the text in the section
    uint8_t length = strlen("!!! Error !!!") * 8;
    uint8_t padding = (128 - length) / 2;
 
    // Write the Error header
-   writeLargeText("!!! Error !!!", 0, padding, false);
+   lcd.writeLargeText("!!! Error !!!", 0, padding, false);
 
    // Write the error message
-   writeSmallText(text, 2, 0, true);
+   lcd.writeSmallText(text, 2, 0, true);
 }
 
+uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
+   switch (corner) {
+   case TOP_LEFT: case BOTTOM_LEFT:
+       return 0;
+   case TOP_RIGHT: case BOTTOM_RIGHT:
+       return 64;
+   }
+}
+
+uint8_t HUDL::wrapForCorner(HUDL::Corner corner) {
+   switch (corner) {
+   case TOP_LEFT: case BOTTOM_LEFT:
+       return 64;
+   case TOP_RIGHT: case BOTTOM_RIGHT:
+       return 128;
+   }
+}
+
+uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
+   switch (corner) {
+   case TOP_LEFT: case TOP_RIGHT:
+       return 0;
+   case BOTTOM_LEFT: case BOTTOM_RIGHT:
+       return 4;
+   }
+}
 }// namespace HUDL

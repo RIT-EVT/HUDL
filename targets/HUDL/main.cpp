@@ -213,7 +213,7 @@ int main() {
 
     hudl.initLCD();
     uint8_t displayCounter = 0;
-    while (1) {
+    while (true) {
         if (displayCounter >= 100) {
             displayCounter = 0;
             hudl.updateLCD();

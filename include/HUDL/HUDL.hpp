@@ -67,7 +67,6 @@ public:
     DEV::LCD lcd;
 
     static constexpr uintptr_t TMS_NODE_ID = 0x08;
-    static constexpr uintptr_t BMS_NODE_ID = 0x05;
     static constexpr uintptr_t MC_NODE_ID = 0x01;
 private:
     enum CurrentPage {
@@ -84,6 +83,7 @@ private:
 
     CurrentPage currentHUDLScreen = PAGE_1;
     bool setHeaders = false;
+    char* errorString;
 
     unsigned char evtBitMap[1024] = {
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -154,9 +154,7 @@ private:
     uint16_t dummyValue = 0;
 
     uint16_t totalVoltage = 0;
-
-    uint16_t mcVoltage = 0;
-
+    
     uint16_t thermTemps[4] = {};
 
     /** The status word provided by the MC node over CAN. Found in the first 16 bits of the 1st PDO coming from the MC. */
@@ -167,14 +165,13 @@ private:
 
     uint32_t actualPosition = 0;
 
-    void writeError(const char* text);
-    void headerForCorner(Corner corner, const char* text);
-    void dataForCorner(Corner corner, const char* text);
     static uint8_t columnForCorner(Corner corner);
     static uint8_t pageForCorner(Corner corner);
     static uint8_t wrapForCorner(HUDL::Corner corner);
-    void writeLargeText(const char* text, uint8_t page, uint8_t column, bool wrapText);
-    void writeSmallText(const char* text, uint8_t page, uint8_t column, bool wrapText);
+
+    void writeError(const char* text);
+    void headerForCorner(Corner corner, const char* text);
+    void dataForCorner(Corner corner, const char* text);
 
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 37;
 
@@ -435,17 +432,6 @@ private:
 
         CO_OBJ_DIR_ENDMARK,
     };
-
-    static constexpr char* SECTION_TITLES[9]{
-        "Voltage",
-        "MPH",
-        "RPM",
-        "Temp 1",
-        "Temp 2",
-        "Temp 3",
-        "MC Stat",
-        "Position",
-        "Torque"};
 };
 
 }// namespace HUDL
