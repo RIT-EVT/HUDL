@@ -83,8 +83,8 @@ void HUDL::updateLCD() {
             std::sprintf(status, "GO");
         } else {
             std::sprintf(status, "UNKNOWN");
-//            std::sprintf(errorString, "There was an error with the Motor Controller: Unknown Error %x", statusWord);
-//            currentHUDLScreen = ERROR_PAGE;
+            //            std::sprintf(errorString, "There was an error with the Motor Controller: Unknown Error %x", statusWord);
+            //            currentHUDLScreen = ERROR_PAGE;
         }
 
         dataForCorner(BOTTOM_RIGHT, status);
