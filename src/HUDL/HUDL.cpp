@@ -82,8 +82,9 @@ void HUDL::updateLCD() {
         } else if (statusWord == 0x27) {
             std::sprintf(status, "GO");
         } else {
-            std::sprintf(errorString, "There was an error with the Motor Controller: Unknown Error %x", statusWord);
-            currentHUDLScreen = ERROR_PAGE;
+            std::sprintf(status, "UNKNOWN");
+//            std::sprintf(errorString, "There was an error with the Motor Controller: Unknown Error %x", statusWord);
+//            currentHUDLScreen = ERROR_PAGE;
         }
 
         dataForCorner(BOTTOM_RIGHT, status);
@@ -103,7 +104,7 @@ void HUDL::headerForCorner(HUDL::Corner corner, const char* text) {
     uint8_t sectionColumn = columnForCorner(corner);
     uint8_t sectionPage = pageForCorner(corner);
 
-    lcd.clearArea(64, 16, sectionPage, sectionColumn);
+    lcd.clearArea(64, 2, sectionPage, sectionColumn);
 
     // Calculate the padding to center the text in the section
     uint8_t length = strlen(text) * 8;
@@ -120,7 +121,7 @@ void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
     uint8_t sectionColumn = columnForCorner(corner);
     uint8_t sectionPage = pageForCorner(corner) + 2;
 
-    lcd.clearArea(64, 16, sectionPage, sectionColumn);
+    lcd.clearArea(64, 2, sectionPage, sectionColumn);
 
     // Calculate the padding to center the text in the section
     uint8_t length = strlen(text) * 8;

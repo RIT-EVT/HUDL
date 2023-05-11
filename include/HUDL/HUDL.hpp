@@ -164,7 +164,7 @@ private:
     /** The torque actual value provided by the MC node over CAN. Found in the first 16 bits of the 4th PDO coming from the MC. */
     uint16_t torqueActual = 0;
 
-    uint32_t actualPosition = 0;
+    uint16_t actualPosition = 0;
 
     static uint8_t columnForCorner(Corner corner);
     static uint8_t pageForCorner(Corner corner);
@@ -349,7 +349,7 @@ private:
         {
             .Key = CO_KEY(0x1601, 2, CO_UNSIGNED32 | CO_OBJ_D__R_),
             .Type = nullptr,
-            .Data = CO_LINK(0x2101, 1, 32),
+            .Data = CO_LINK(0x2101, 1, 16),
         },
         {
             .Key = CO_KEY(0x1601, 3, CO_UNSIGNED32 | CO_OBJ_D__R_),
@@ -410,7 +410,7 @@ private:
             .Data = (uintptr_t) &statusWord,
         },
         {
-            .Key = CO_KEY(0x2101, 1, CO_UNSIGNED32 | CO_OBJ___PRW),
+            .Key = CO_KEY(0x2101, 1, CO_UNSIGNED16 | CO_OBJ___PRW),
             .Type = nullptr,
             .Data = (uintptr_t) &actualPosition,
         },
