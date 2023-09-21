@@ -25,11 +25,6 @@ HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(r
 void HUDL::initLCD() {
     lcd.initLCD();
     lcd.clearLCD();
-    lcd.setEntireScreenBitMap(evtBitMap);
-    EVT::core::time::wait(2000);
-    lcd.clearLCD();
-    //    lcd.setDefaultSections(SECTION_TITLES);
-    //    lcd.displaySectionHeaders();
 }
 
 CO_OBJ_T* HUDL::getObjectDictionary() {
@@ -41,62 +36,49 @@ uint16_t HUDL::getObjectDictionarySize() const {
 }
 
 void HUDL::updateLCD() {
-    switch (currentHUDLScreen) {
-    case PAGE_1: {// Set a new scope for this case
-        if (!setHeaders) {
-            lcd.clearLCD();
-            headerForCorner(TOP_LEFT, "Battery");
-            headerForCorner(TOP_RIGHT, "HI Temp");
-            headerForCorner(BOTTOM_LEFT, "RPM");
-            headerForCorner(BOTTOM_RIGHT, "MC Stat");
-            setHeaders = true;
-        }
-
-        // Set the battery voltage
-        char voltage[9];
-        std::sprintf(voltage, "%hu.%hu v", totalVoltage / 10, totalVoltage % 10);
-        dataForCorner(TOP_LEFT, voltage);
-
-        // Set the highest temp
-        uint16_t highestTemp = thermTemps[0];
-        for (uint16_t temp : thermTemps) {
-            if (temp > highestTemp) {
-                highestTemp = temp;
-            }
-        }
-        char temp[9];
-        std::sprintf(temp, "%hu.%hu C", thermTemps[0] / 100, thermTemps[0] % 100);
-
-        dataForCorner(TOP_RIGHT, temp);
-
-        // Set the rpm
-        char rpm[8];
-        std::sprintf(rpm, "%lu", actualPosition);
-        dataForCorner(BOTTOM_LEFT, rpm);
-
-        // Set the status word
-        char status[8];
-
-        if (statusWord == 0x21) {
-            std::sprintf(status, "STOP");
-        } else if (statusWord == 0x27) {
-            std::sprintf(status, "GO");
-        } else {
-            std::sprintf(status, "UNKNOWN");
-            //            std::sprintf(errorString, "There was an error with the Motor Controller: Unknown Error %x", statusWord);
-            //            currentHUDLScreen = ERROR_PAGE;
-        }
-
-        dataForCorner(BOTTOM_RIGHT, status);
-    } break;
-    case ERROR_PAGE: {// Set a new scope for this page
-        if (!setHeaders) {
-            lcd.clearLCD();
-        }
-        writeError(errorString);
-        break;
+    if (!setHeaders) {
+        lcd.clearLCD();
+        headerForCorner(TOP_LEFT, "Battery");
+        headerForCorner(TOP_RIGHT, "HI Temp");
+        headerForCorner(BOTTOM_LEFT, "RPM");
+        headerForCorner(BOTTOM_RIGHT, "MC Stat");
+        setHeaders = true;
     }
+
+    // Set the battery voltage
+    char voltage[9];
+    std::sprintf(voltage, "%hu.%hu v", totalVoltage / 10, totalVoltage % 10);
+    dataForCorner(TOP_LEFT, voltage);
+
+    // Set the highest temp
+    uint16_t highestTemp = thermTemps[0];
+    for (uint16_t temp : thermTemps) {
+        if (temp > highestTemp) {
+            highestTemp = temp;
+        }
     }
+
+    char temp[9];
+    std::sprintf(temp, "0x%02X C", highestTemp);
+    dataForCorner(TOP_RIGHT, temp);
+
+    // Set the rpm
+    char rpm[8];
+    std::sprintf(rpm, "%u", actualPosition);
+    dataForCorner(BOTTOM_LEFT, rpm);
+
+    // Set the status word
+    char status[8];
+
+    if (statusWord == 0x21) {
+        std::sprintf(status, "STOP");
+    } else if (statusWord == 0x27) {
+        std::sprintf(status, "GO");
+    } else {
+        std::sprintf(status, "0x%x", statusWord);
+    }
+
+    dataForCorner(BOTTOM_RIGHT, status);
 }
 
 void HUDL::headerForCorner(HUDL::Corner corner, const char* text) {
@@ -113,7 +95,7 @@ void HUDL::headerForCorner(HUDL::Corner corner, const char* text) {
     sectionColumn += padding;
 
     // Write the text to the screen under the section header.
-    lcd.writeLargeText(text, sectionPage, sectionColumn, false);
+    lcd.writeText(text, sectionPage, sectionColumn, EVT::core::DEV::LCD::FontSize::LARGE, false);
 }
 
 void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
@@ -130,21 +112,12 @@ void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
     sectionColumn += padding;
 
     // Write the text to the screen under the section header.
-    lcd.writeLargeText(text, sectionPage, sectionColumn, false);
+    lcd.writeText(text, sectionPage, sectionColumn, EVT::core::DEV::LCD::FontSize::LARGE, false);
 }
 
-void HUDL::writeError(const char* text) {
-    // Calculate the padding to center the text in the section
-    uint8_t length = strlen("!!! Error !!!") * 8;
-    uint8_t padding = (128 - length) / 2;
-
-    // Write the Error header
-    lcd.writeLargeText("!!! Error !!!", 0, padding, false);
-
-    // Write the error message
-    lcd.writeSmallText(text, 2, 0, true);
-}
-
+// Ignore the -Wreturn-type warning that occurs here because of the switch statements.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wreturn-type"
 uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
     switch (corner) {
     case TOP_LEFT:
@@ -153,17 +126,6 @@ uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
     case TOP_RIGHT:
     case BOTTOM_RIGHT:
         return 64;
-    }
-}
-
-uint8_t HUDL::wrapForCorner(HUDL::Corner corner) {
-    switch (corner) {
-    case TOP_LEFT:
-    case BOTTOM_LEFT:
-        return 64;
-    case TOP_RIGHT:
-    case BOTTOM_RIGHT:
-        return 128;
     }
 }
 
@@ -177,4 +139,6 @@ uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
         return 4;
     }
 }
+#pragma GCC diagnostic pop
+
 }// namespace HUDL
