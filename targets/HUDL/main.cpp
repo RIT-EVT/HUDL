@@ -25,8 +25,8 @@ using namespace std;
 #define DEVICE_COUNT 1
 
 ///////////////////////////////////////////////////////////////////////////////
-// EVT-core CAN call back and CAN set up. This will include logic to set     //
-// aside CANopen messages into a specific queue                              //
+// EVT-core CAN callback and CAN setup. This will include logic to set
+// aside CANopen messages into a specific queue
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
