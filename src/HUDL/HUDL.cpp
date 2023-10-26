@@ -67,7 +67,7 @@ void HUDL::updateLCD() {
     std::sprintf(rpm, "%u", actualPosition);
     dataForCorner(BOTTOM_LEFT, rpm);
 
-    // Set the status word
+    // Set the motor controller status word
     char status[8];
 
     if (statusWord == 0x21) {
