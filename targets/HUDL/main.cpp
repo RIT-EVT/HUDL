@@ -26,7 +26,7 @@ using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 // EVT-core CAN call back and CAN set up. This will include logic to set     //
-// aside CANOpen messages into a specific queue                              //
+// aside CANopen messages into a specific queue                              //
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
