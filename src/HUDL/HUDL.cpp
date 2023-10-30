@@ -38,8 +38,8 @@ uint16_t HUDL::getObjectDictionarySize() const {
 void HUDL::updateLCD() {
     if (!setHeaders) {
         lcd.clearLCD();
-        headerForCorner(TOP_LEFT, "Battery");
-        headerForCorner(TOP_RIGHT, "HI Temp");
+        headerForCorner(TOP_LEFT, "Bat %");
+        headerForCorner(TOP_RIGHT, "Temp");
         headerForCorner(BOTTOM_LEFT, "RPM");
         headerForCorner(BOTTOM_RIGHT, "MC Stat");
         setHeaders = true;
@@ -59,7 +59,7 @@ void HUDL::updateLCD() {
     }
 
     char temp[9];
-    std::sprintf(temp, "0x%02X C", highestTemp);
+    std::sprintf(temp, "%hu.%hu C", highestTemp / 10, highestTemp % 10);
     dataForCorner(TOP_RIGHT, temp);
 
     // Set the rpm
@@ -75,7 +75,7 @@ void HUDL::updateLCD() {
     } else if (statusWord == 0x27) {
         std::sprintf(status, "GO");
     } else {
-        std::sprintf(status, "0x%x", statusWord);
+        std::sprintf(status, "%x", statusWord);
     }
 
     dataForCorner(BOTTOM_RIGHT, status);
@@ -115,9 +115,6 @@ void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
     lcd.writeText(text, sectionPage, sectionColumn, EVT::core::DEV::LCD::FontSize::LARGE, false);
 }
 
-// Ignore the -Wreturn-type warning that occurs here because of the switch statements.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
 uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
     switch (corner) {
     case TOP_LEFT:
@@ -126,6 +123,8 @@ uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
     case TOP_RIGHT:
     case BOTTOM_RIGHT:
         return 64;
+    default:
+        return -1;
     }
 }
 
@@ -137,7 +136,10 @@ uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
     case BOTTOM_LEFT:
     case BOTTOM_RIGHT:
         return 4;
+    default:
+        return -1;
     }
+
 }
 #pragma GCC diagnostic pop
 

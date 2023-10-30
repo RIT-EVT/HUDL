@@ -34,7 +34,7 @@ using namespace std;
  * will be passed to the EVT-core CAN interface which will in turn call this
  * function each time a new CAN message comes in.
  *
- * NOTE: For this sample, every non-extended (so 11 bit CAN IDs) will be
+ * NOTE: For this sample, every non-extended (so 11  bit CAN IDs) will be
  * assumed to be intended to be passed as a CANopen message.
  *
  * @param message[in] The passed in CAN message that was read.
@@ -55,7 +55,8 @@ int main() {
 
     IO::UART& uart = IO::getUART<IO::Pin::PB_9, IO::Pin::PB_8>(9600);
     log::LOGGER.setUART(&uart);
-
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::INFO);
+    
     // Will store CANOpen messages that will be populated by the EVT-core CAN
     // interrupt
     auto canOpenQueue = EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>(true);
