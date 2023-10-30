@@ -25,8 +25,7 @@ using namespace std;
 #define DEVICE_COUNT 1
 
 ///////////////////////////////////////////////////////////////////////////////
-// EVT-core CAN callback and CAN setup. This will include logic to set
-// aside CANopen messages into a specific queue
+// CANopen specific Callbacks. Need to be defined in some location
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -39,7 +38,6 @@ using namespace std;
  *
  * @param message[in] The passed in CAN message that was read.
  */
-
 // create a can interrupt handler
 void canInterrupt(IO::CANMessage& message, void* priv) {
     auto* queue = (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
@@ -49,6 +47,32 @@ void canInterrupt(IO::CANMessage& message, void* priv) {
     }
 }
 
+extern "C" void CONodeFatalError(void) {}
+
+extern "C" void COIfCanReceive(CO_IF_FRM* frm) {}
+
+extern "C" int16_t COLssStore(uint32_t baudrate, uint8_t nodeId) { return 0; }
+
+extern "C" int16_t COLssLoad(uint32_t* baudrate, uint8_t* nodeId) { return 0; }
+
+extern "C" void CONmtModeChange(CO_NMT* nmt, CO_MODE mode) {}
+
+extern "C" void CONmtHbConsEvent(CO_NMT* nmt, uint8_t nodeId) {}
+
+extern "C" void CONmtHbConsChange(CO_NMT* nmt, uint8_t nodeId, CO_MODE mode) {}
+
+extern "C" int16_t COParaDefault(CO_PARA* pg) { return 0; }
+
+extern "C" void COPdoTransmit(CO_IF_FRM* frm) {}
+
+extern "C" int16_t COPdoReceive(CO_IF_FRM* frm) { return 0; }
+
+extern "C" void COPdoSyncUpdate(CO_RPDO* pdo) {}
+
+extern "C" void COTmrLock(void) {}
+
+extern "C" void COTmrUnlock(void) {}
+
 int main() {
     // Initialize system
     EVT::core::platform::init();
@@ -56,7 +80,7 @@ int main() {
     IO::UART& uart = IO::getUART<IO::Pin::PB_9, IO::Pin::PB_8>(9600);
     log::LOGGER.setUART(&uart);
     log::LOGGER.setLogLevel(log::Logger::LogLevel::INFO);
-    
+
     // Will store CANOpen messages that will be populated by the EVT-core CAN
     // interrupt
     auto canOpenQueue = EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>(true);
@@ -171,32 +195,3 @@ int main() {
         COTmrProcess(&canNode.Tmr);
     }
 }
-
-///////////////////////////////////////////////////////////////////////////////
-// CANopen specific Callbacks. Need to be defined in some location
-///////////////////////////////////////////////////////////////////////////////
-extern "C" void CONodeFatalError(void) {}
-
-extern "C" void COIfCanReceive(CO_IF_FRM* frm) {}
-
-extern "C" int16_t COLssStore(uint32_t baudrate, uint8_t nodeId) { return 0; }
-
-extern "C" int16_t COLssLoad(uint32_t* baudrate, uint8_t* nodeId) { return 0; }
-
-extern "C" void CONmtModeChange(CO_NMT* nmt, CO_MODE mode) {}
-
-extern "C" void CONmtHbConsEvent(CO_NMT* nmt, uint8_t nodeId) {}
-
-extern "C" void CONmtHbConsChange(CO_NMT* nmt, uint8_t nodeId, CO_MODE mode) {}
-
-extern "C" int16_t COParaDefault(CO_PARA* pg) { return 0; }
-
-extern "C" void COPdoTransmit(CO_IF_FRM* frm) {}
-
-extern "C" int16_t COPdoReceive(CO_IF_FRM* frm) { return 0; }
-
-extern "C" void COPdoSyncUpdate(CO_RPDO* pdo) {}
-
-extern "C" void COTmrLock(void) {}
-
-extern "C" void COTmrUnlock(void) {}
