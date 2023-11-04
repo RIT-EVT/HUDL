@@ -64,7 +64,7 @@ void HUDL::updateLCD() {
 
     // Set the rpm
     char rpm[8];
-    std::sprintf(rpm, "%u", actualPosition);
+    std::sprintf(rpm, "%d", actualPosition);
     dataForCorner(BOTTOM_LEFT, rpm);
 
     // Set the motor controller status word

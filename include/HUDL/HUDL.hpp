@@ -91,7 +91,7 @@ private:
     /** The torque actual value provided by the MC node over CAN. Found in the first 16 bits of the 4th PDO coming from the MC. */
     uint16_t torqueActual = 0;
 
-    uint16_t actualPosition = 0;
+    int16_t actualPosition = 0;
 
     static uint8_t columnForCorner(Corner corner);
     static uint8_t pageForCorner(Corner corner);
