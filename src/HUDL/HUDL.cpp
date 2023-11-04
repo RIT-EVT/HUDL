@@ -140,6 +140,5 @@ uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
         return -1;
     }
 }
-#pragma GCC diagnostic pop
 
 }// namespace HUDL
