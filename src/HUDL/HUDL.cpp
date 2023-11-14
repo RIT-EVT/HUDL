@@ -12,7 +12,7 @@
 #include <HUDL/HUDL.hpp>
 #include <cstdio>
 #include <cstring>
-#include "EVT/dev/BitmapFonts.hpp"
+
 // clang-format on
 
 namespace IO = EVT::core::IO;
@@ -31,8 +31,12 @@ CO_OBJ_T* HUDL::getObjectDictionary() {
     return &objectDictionary[0];
 }
 
-uint16_t HUDL::getObjectDictionarySize() const {
+uint8_t HUDL::getNumElements() {
     return OBJECT_DICTIONARY_SIZE;
+}
+
+uint8_t HUDL::getNodeID() {
+    return NODE_ID;
 }
 
 void HUDL::updateLCD() {
@@ -140,5 +144,4 @@ uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
         return -1;
     }
 }
-
 }// namespace HUDL
