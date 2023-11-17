@@ -95,7 +95,7 @@ int main() {
     //create the RPDO node
     IO::GPIO* devices[DEVICE_COUNT];
 
-    IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::OUTPUT);
 
     IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_7>(EVT::core::IO::GPIO::Direction::OUTPUT);
     devices[0] = &IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
