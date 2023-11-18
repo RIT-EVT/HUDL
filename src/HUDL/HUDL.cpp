@@ -20,6 +20,8 @@ namespace DEV = EVT::core::DEV;
 namespace log = EVT::core::log;
 
 namespace HUDL {
+typedef DEV::LCD::FontSize FontSize;
+
 HUDL::HUDL(IO::GPIO& reg_select, IO::GPIO& reset, IO::SPI& spi) : lcd(DEV::LCD(reg_select, reset, spi)) {}
 
 void HUDL::initLCD() {
@@ -85,7 +87,7 @@ void HUDL::updateLCD() {
     dataForCorner(BOTTOM_RIGHT, status);
 }
 
-void HUDL::headerForCorner(HUDL::Corner corner, const char* text) {
+void HUDL::headerForCorner(Corner corner, const char* text) {
     // Clear the sections area so text is not written over old text.
     uint8_t sectionColumn = columnForCorner(corner);
     uint8_t sectionPage = pageForCorner(corner);
@@ -99,10 +101,10 @@ void HUDL::headerForCorner(HUDL::Corner corner, const char* text) {
     sectionColumn += padding;
 
     // Write the text to the screen under the section header.
-    lcd.writeText(text, sectionPage, sectionColumn, EVT::core::DEV::LCD::FontSize::LARGE, false);
+    lcd.writeText(text, sectionPage, sectionColumn, FontSize::LARGE, false);
 }
 
-void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
+void HUDL::dataForCorner(Corner corner, const char* text) {
     // Clear the sections area so text is not written over old text.
     uint8_t sectionColumn = columnForCorner(corner);
     uint8_t sectionPage = pageForCorner(corner) + 2;
@@ -116,10 +118,10 @@ void HUDL::dataForCorner(HUDL::Corner corner, const char* text) {
     sectionColumn += padding;
 
     // Write the text to the screen under the section header.
-    lcd.writeText(text, sectionPage, sectionColumn, EVT::core::DEV::LCD::FontSize::LARGE, false);
+    lcd.writeText(text, sectionPage, sectionColumn, FontSize::LARGE, false);
 }
 
-uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
+uint8_t HUDL::columnForCorner(Corner corner) {
     switch (corner) {
     case TOP_LEFT:
     case BOTTOM_LEFT:
@@ -132,7 +134,7 @@ uint8_t HUDL::columnForCorner(HUDL::Corner corner) {
     }
 }
 
-uint8_t HUDL::pageForCorner(HUDL::Corner corner) {
+uint8_t HUDL::pageForCorner(Corner corner) {
     switch (corner) {
     case TOP_LEFT:
     case TOP_RIGHT:

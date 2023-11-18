@@ -132,7 +132,7 @@ private:
         RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(2, 1, PDO_MAPPING_UNSIGNED16), // Dummy Value
         RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(2, 2, PDO_MAPPING_UNSIGNED16), // Battery Voltage
 
-        DATA_LINK_START_KEY_210X(0, 6),
+        DATA_LINK_START_KEY_210X(0, 4),
         DATA_LINK_210X(0, 1, CO_TUNSIGNED16, &thermTemps[0]), // Temperature One
         DATA_LINK_210X(0, 2, CO_TUNSIGNED16, &thermTemps[1]), // Temperature Two
         DATA_LINK_210X(0, 3, CO_TUNSIGNED16, &thermTemps[2]), // Temperature Three

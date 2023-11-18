@@ -16,6 +16,7 @@ namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 namespace time = EVT::core::time;
 namespace log = EVT::core::log;
+namespace types = EVT::core::types;
 using namespace std;
 
 #define SPI_SPEED SPI_SPEED_500KHZ
@@ -38,7 +39,7 @@ using namespace std;
  */
 // create a can interrupt handler
 void canInterrupt(IO::CANMessage& message, void* priv) {
-    auto* queue = (EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
+    auto* queue = (types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage>*) priv;
 
     if (queue != nullptr) {
         queue->append(message);
@@ -59,10 +60,10 @@ int main() {
     //create the RPDO node
     IO::GPIO* devices[DEVICE_COUNT];
 
-    IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& regSelect = IO::getGPIO<IO::Pin::PA_3>(IO::GPIO::Direction::OUTPUT);
 
-    IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_7>(EVT::core::IO::GPIO::Direction::OUTPUT);
-    devices[0] = &IO::getGPIO<IO::Pin::PB_12>(EVT::core::IO::GPIO::Direction::OUTPUT);
+    IO::GPIO& reset = IO::getGPIO<IO::Pin::PB_7>(IO::GPIO::Direction::OUTPUT);
+    devices[0] = &IO::getGPIO<IO::Pin::PB_12>(IO::GPIO::Direction::OUTPUT);
     devices[0]->writePin(IO::GPIO::State::HIGH);
 
     auto& hudl_spi = IO::getSPI<IO::Pin::SPI_SCK, IO::Pin::SPI_MOSI>(devices, DEVICE_COUNT);
@@ -83,7 +84,7 @@ int main() {
 
     // Will store CANopen messages that will be populated by the EVT-core CAN
     // interrupt
-    EVT::core::types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
+    types::FixedQueue<CANOPEN_QUEUE_SIZE, IO::CANMessage> canOpenQueue;
 
     // Initialize CAN, add an IRQ which will add messages to the queue above
     IO::CAN& can = IO::getCAN<IO::Pin::PA_12, IO::Pin::PA_11>();
