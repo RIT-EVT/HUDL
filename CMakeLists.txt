@@ -11,6 +11,8 @@ cmake_minimum_required(VERSION 3.15)
 # is changed to TPDO (CO_TPDO_N=50)
 add_compile_definitions(CO_RPDO_N=50)
 
+add_compile_definitions(USE_HAL_DRIVER)
+
 set(EVT_CORE_DIR      ${CMAKE_SOURCE_DIR}/libs/EVT-core)
 set(TARGET_DEV        "STM32F302x8")
 

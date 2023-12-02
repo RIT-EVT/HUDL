@@ -2,6 +2,8 @@
  * This is the main code running on the HUDL responsible for displaying
  * information that other boards that broadcast through the CAN network
  */
+#include <cstdint>
+
 #include <EVT/dev/Timer.hpp>
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
