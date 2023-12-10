@@ -118,35 +118,35 @@ private:
         RECEIVE_PDO_SETTINGS_OBJECT_140X(1, 0, MC_NODE_ID, RECEIVE_PDO_TRIGGER_ASYNC),
         RECEIVE_PDO_SETTINGS_OBJECT_140X(2, 1, MC_NODE_ID, RECEIVE_PDO_TRIGGER_ASYNC),
 
-        RECEIVE_PDO_N_MAPPING_START_KEY_160X(0, 4),
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(0, 1, PDO_MAPPING_UNSIGNED16),// Temperature One
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(0, 2, PDO_MAPPING_UNSIGNED16),// Temperature Two
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(0, 3, PDO_MAPPING_UNSIGNED16),// Temperature Three
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(0, 4, PDO_MAPPING_UNSIGNED16),// Temperature Four
+        RECEIVE_PDO_MAPPING_START_KEY_16XX(0, 4),
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(0, 1, PDO_MAPPING_UNSIGNED16),// Temperature One
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(0, 2, PDO_MAPPING_UNSIGNED16),// Temperature Two
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(0, 3, PDO_MAPPING_UNSIGNED16),// Temperature Three
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(0, 4, PDO_MAPPING_UNSIGNED16),// Temperature Four
 
-        RECEIVE_PDO_N_MAPPING_START_KEY_160X(1, 3),
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(1, 1, PDO_MAPPING_UNSIGNED16),// Status Word
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(1, 2, PDO_MAPPING_UNSIGNED16),// Position Actual
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(1, 3, PDO_MAPPING_UNSIGNED16),// Torque Actual
+        RECEIVE_PDO_MAPPING_START_KEY_16XX(1, 3),
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(1, 1, PDO_MAPPING_UNSIGNED16),// Status Word
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(1, 2, PDO_MAPPING_UNSIGNED16),// Position Actual
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(1, 3, PDO_MAPPING_UNSIGNED16),// Torque Actual
 
-        RECEIVE_PDO_N_MAPPING_START_KEY_160X(2, 2),
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(2, 1, PDO_MAPPING_UNSIGNED16),// Unused Value
-        RECEIVE_PDO_N_MAPPING_ENTRY_N_160X(2, 2, PDO_MAPPING_UNSIGNED16),// Battery Voltage
+        RECEIVE_PDO_MAPPING_START_KEY_16XX(2, 2),
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(2, 1, PDO_MAPPING_UNSIGNED16),// Unused Value
+        RECEIVE_PDO_MAPPING_ENTRY_16XX(2, 2, PDO_MAPPING_UNSIGNED16),// Battery Voltage
 
-        DATA_LINK_START_KEY_210X(0, 4),
-        DATA_LINK_210X(0, 1, CO_TUNSIGNED16, &thermTemps[0]),// Temperature One
-        DATA_LINK_210X(0, 2, CO_TUNSIGNED16, &thermTemps[1]),// Temperature Two
-        DATA_LINK_210X(0, 3, CO_TUNSIGNED16, &thermTemps[2]),// Temperature Three
-        DATA_LINK_210X(0, 4, CO_TUNSIGNED16, &thermTemps[3]),// Temperature Four
+        DATA_LINK_START_KEY_21XX(0, 4),
+        DATA_LINK_21XX(0, 1, CO_TUNSIGNED16, &thermTemps[0]),// Temperature One
+        DATA_LINK_21XX(0, 2, CO_TUNSIGNED16, &thermTemps[1]),// Temperature Two
+        DATA_LINK_21XX(0, 3, CO_TUNSIGNED16, &thermTemps[2]),// Temperature Three
+        DATA_LINK_21XX(0, 4, CO_TUNSIGNED16, &thermTemps[3]),// Temperature Four
 
-        DATA_LINK_START_KEY_210X(1, 3),
-        DATA_LINK_210X(1, 1, CO_TUNSIGNED16, &statusWord),    // Status Word
-        DATA_LINK_210X(1, 2, CO_TUNSIGNED16, &actualPosition),// Actual Position
-        DATA_LINK_210X(1, 3, CO_TUNSIGNED16, &torqueActual),  // Torque Actual
+        DATA_LINK_START_KEY_21XX(1, 3),
+        DATA_LINK_21XX(1, 1, CO_TUNSIGNED16, &statusWord),    // Status Word
+        DATA_LINK_21XX(1, 2, CO_TUNSIGNED16, &actualPosition),// Actual Position
+        DATA_LINK_21XX(1, 3, CO_TUNSIGNED16, &torqueActual),  // Torque Actual
 
-        DATA_LINK_START_KEY_210X(2, 2),
-        DATA_LINK_210X(2, 1, CO_TUNSIGNED16, &dummyValue),  // Unused Value
-        DATA_LINK_210X(2, 2, CO_TUNSIGNED16, &totalVoltage),// Total Voltage
+        DATA_LINK_START_KEY_21XX(2, 2),
+        DATA_LINK_21XX(2, 1, CO_TUNSIGNED16, &dummyValue),  // Unused Value
+        DATA_LINK_21XX(2, 2, CO_TUNSIGNED16, &totalVoltage),// Total Voltage
 
         CO_OBJ_DICT_ENDMARK,
     };
