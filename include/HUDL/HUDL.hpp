@@ -7,7 +7,6 @@
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/SPI.hpp>
 #include <HUDL/HUDL.hpp>
-#include <stdint.h>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
@@ -62,13 +61,14 @@ public:
     void updateLCD();
 
     /**
-     * reg_select PA_3
-     * reset      PB_3
-     * cs         PB_12
+     * +The internal LCD used for for the HUDL to display.
      */
     DEV::LCD lcd;
 
 private:
+    /**
+     * The corner of the display that will content will be displayed in.
+     */
     enum Corner {
         TOP_LEFT,
         TOP_RIGHT,
@@ -77,19 +77,25 @@ private:
     };
 
     /**
-     * The node ID used to identify the device on the CAN network.
+     * The node IDs used to identify the device on the CAN network.
      */
-    static constexpr uint8_t NODE_ID = 0x11;
+    /** NODE ID for the HUDL */
+    static constexpr uint8_t NODE_ID = 11;
+    /** NODE ID for the TMS */
+    static constexpr uintptr_t TMS_NODE_ID = 8;
+    /** NANO ID for the Motor Controller */
+    static constexpr uintptr_t MC_NODE_ID = 1;
 
-    static constexpr uintptr_t TMS_NODE_ID = 0x08;
-    static constexpr uintptr_t MC_NODE_ID = 0x01;
-
+    /** A boolean that tracks whether or not the headers have been set. */
     bool setHeaders = false;
 
+    /** An unused value for holding a place in the CAN Object Dictionary */
     uint16_t dummyValue = 0;
 
+    /** The total voltage from the Motor Controller */
     uint16_t totalVoltage = 0;
 
+    /** An array of four temperatures from the TMS */
     uint16_t thermTemps[4] = {};
 
     /** The status word provided by the MC node over CAN. Found in the first 16 bits of the 1st PDO coming from the MC. */
@@ -98,16 +104,51 @@ private:
     /** The torque actual value provided by the MC node over CAN. Found in the first 16 bits of the 4th PDO coming from the MC. */
     uint16_t torqueActual = 0;
 
+    /** The current position of the Motor Controller. Used to calculate speed, RPM and more. */
     int16_t actualPosition = 0;
 
+    /**
+     * A static function that retrieves the column number for a specified corner. This is used
+     * to start drawing at a specific x column when we want to display in one of the corners.
+     *
+     * @param corner the corner to retrieve a column number for.
+     * @return the column index that indicates the start of the given corner.
+     */
     static uint8_t columnForCorner(Corner corner);
+
+    /**
+     * A static function that retrieves the page number for a specified corner. This is used
+     * to retrieve the y page where drawing should begin for a specific corner.
+     *
+     * @param corner the corner to retrieve the page for.
+     * @return the page index that indicates the start of the given corner.
+     */
     static uint8_t pageForCorner(Corner corner);
 
+    /**
+     * Sets the header for a given corner to the specific text
+     *
+     * @param corner the corner to change text for.
+     * @param text the header text to display.
+     */
     void headerForCorner(Corner corner, const char* text);
+
+    /**
+     * Sets the data to display for a given corner
+     *
+     * @param corner the corner to set data for.
+     * @param text the data to display in the corner.
+     */
     void dataForCorner(Corner corner, const char* text);
 
+    /**
+     * The size of the CAN object dictionary.
+     */
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 46;
 
+    /**
+     * The CAN object dictionary.
+     */
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         MANDATORY_IDENTIFICATION_ENTRIES_1000_1014,
         HEARTBEAT_PRODUCER_1017(2000),
