@@ -8,6 +8,8 @@
 #include <EVT/io/SPI.hpp>
 #include <HUDL/HUDL.hpp>
 
+#define REFRESH_RATE 16128
+
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
@@ -56,9 +58,10 @@ public:
     uint8_t getNodeID() override;
 
     /**
-     * Updates the LCD display with values received from the CAN network
+     * Standard process function for the HUDL. Updates the HUDL display on a set refresh rate.
+     * The refresh rate is defined as REFRESH_RATE
      */
-    void updateLCD();
+    void process();
 
     /**
      * +The internal LCD used for for the HUDL to display.
@@ -75,6 +78,16 @@ private:
         BOTTOM_LEFT,
         BOTTOM_RIGHT
     };
+
+    /**
+     * Updates the LCD display with values received from the CAN network
+     */
+    void updateLCD();
+
+    /**
+     * A counter to limit the rate at which we update the display.
+     */
+    uint16_t displayCounter = 0;
 
     /**
      * The node IDs used to identify the device on the CAN network.

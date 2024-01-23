@@ -23,7 +23,6 @@ using namespace std;
 
 #define SPI_SPEED SPI_SPEED_500KHZ
 #define DEVICE_COUNT 1
-#define REFRESH_RATE 16128
 
 ///////////////////////////////////////////////////////////////////////////////
 // CANopen specific Callbacks. Need to be defined in some location
@@ -139,17 +138,9 @@ int main() {
     ///////////////////////////////////////////////////////////////////////////
 
     hudl.initLCD();
-    uint16_t displayCounter = 0;
 
     while (true) {
-        if (displayCounter >= REFRESH_RATE) {
-            displayCounter = 0;
-
-            hudl.updateLCD();
-        } else {
-            displayCounter++;
-        }
-
+        hudl.process();
         IO::processCANopenNode(&canNode);
     }
 }
