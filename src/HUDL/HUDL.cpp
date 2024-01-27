@@ -146,6 +146,7 @@ uint8_t HUDL::pageForCorner(Corner corner) {
         return -1;
     }
 }
+
 void HUDL::process() {
     if (displayCounter >= REFRESH_RATE) {
         displayCounter = 0;
@@ -155,4 +156,5 @@ void HUDL::process() {
         displayCounter++;
     }
 }
+
 }// namespace HUDL
