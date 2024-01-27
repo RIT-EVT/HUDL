@@ -64,13 +64,13 @@ public:
     void process();
 
     /**
-     * +The internal LCD used for for the HUDL to display.
+     * The internal LCD used for for the HUDL to display.
      */
     DEV::LCD lcd;
 
 private:
     /**
-     * The corner of the display that will content will be displayed in.
+     * The corner of the display that the content will be displayed in.
      */
     enum Corner {
         TOP_LEFT,
@@ -121,7 +121,7 @@ private:
     int16_t actualPosition = 0;
 
     /**
-     * A static function that retrieves the column number for a specified corner. This is used
+     * Retrieves the column number for a specified corner. This is used
      * to start drawing at a specific x column when we want to display in one of the corners.
      *
      * @param corner the corner to retrieve a column number for.
@@ -155,12 +155,12 @@ private:
     void dataForCorner(Corner corner, const char* text);
 
     /**
-     * The size of the CAN object dictionary.
+     * The size of the CANopen object dictionary.
      */
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 46;
 
     /**
-     * The CAN object dictionary.
+     * The CANopen object dictionary.
      */
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         MANDATORY_IDENTIFICATION_ENTRIES_1000_1014,
