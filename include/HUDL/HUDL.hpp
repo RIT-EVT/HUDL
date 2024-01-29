@@ -96,10 +96,10 @@ private:
     static constexpr uint8_t NODE_ID = 11;
     /** NODE ID for the TMS */
     static constexpr uintptr_t TMS_NODE_ID = 8;
-    /** NANO ID for the Motor Controller */
+    /** NODE ID for the Motor Controller */
     static constexpr uintptr_t MC_NODE_ID = 1;
 
-    /** A boolean that tracks whether or not the headers have been set. */
+    /**  Tracks whether or not the headers have been set. */
     bool setHeaders = false;
 
     /** An unused value for holding a place in the CAN Object Dictionary */
