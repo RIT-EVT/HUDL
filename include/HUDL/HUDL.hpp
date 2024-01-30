@@ -8,6 +8,8 @@
 #include <EVT/io/SPI.hpp>
 #include <HUDL/HUDL.hpp>
 
+#define REFRESH_RATE 16128
+
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;
 
@@ -56,18 +58,19 @@ public:
     uint8_t getNodeID() override;
 
     /**
-     * Updates the LCD display with values received from the CAN network
+     * Standard process function for the HUDL. Updates the HUDL display on a set refresh rate.
+     * The refresh rate is defined as REFRESH_RATE
      */
-    void updateLCD();
+    void process();
 
     /**
-     * +The internal LCD used for for the HUDL to display.
+     * The internal LCD used for for the HUDL to display.
      */
     DEV::LCD lcd;
 
 private:
     /**
-     * The corner of the display that will content will be displayed in.
+     * The corner of the display that the content will be displayed in.
      */
     enum Corner {
         TOP_LEFT,
@@ -77,16 +80,26 @@ private:
     };
 
     /**
+     * Updates the LCD display with values received from the CAN network
+     */
+    void updateLCD();
+
+    /**
+     * A counter to limit the rate at which we update the display.
+     */
+    uint16_t displayCounter = 0;
+
+    /**
      * The node IDs used to identify the device on the CAN network.
      */
     /** NODE ID for the HUDL */
     static constexpr uint8_t NODE_ID = 11;
     /** NODE ID for the TMS */
     static constexpr uintptr_t TMS_NODE_ID = 8;
-    /** NANO ID for the Motor Controller */
+    /** NODE ID for the Motor Controller */
     static constexpr uintptr_t MC_NODE_ID = 1;
 
-    /** A boolean that tracks whether or not the headers have been set. */
+    /**  Tracks whether or not the headers have been set. */
     bool setHeaders = false;
 
     /** An unused value for holding a place in the CAN Object Dictionary */
@@ -108,7 +121,7 @@ private:
     int16_t actualPosition = 0;
 
     /**
-     * A static function that retrieves the column number for a specified corner. This is used
+     * Retrieves the column number for a specified corner. This is used
      * to start drawing at a specific x column when we want to display in one of the corners.
      *
      * @param corner the corner to retrieve a column number for.
@@ -142,12 +155,12 @@ private:
     void dataForCorner(Corner corner, const char* text);
 
     /**
-     * The size of the CAN object dictionary.
+     * The size of the CANopen object dictionary.
      */
     static constexpr uint16_t OBJECT_DICTIONARY_SIZE = 46;
 
     /**
-     * The CAN object dictionary.
+     * The CANopen object dictionary.
      */
     CO_OBJ_T objectDictionary[OBJECT_DICTIONARY_SIZE + 1] = {
         MANDATORY_IDENTIFICATION_ENTRIES_1000_1014,
