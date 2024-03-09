@@ -1,2 +1,2 @@
 # Add all targets
-add_subdirectory(HUDL)
+add_subdirectory(DEV1-HUDL)
