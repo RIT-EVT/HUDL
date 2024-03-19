@@ -12,7 +12,7 @@
 #include <EVT/utils/log.hpp>
 #include <EVT/utils/time.hpp>
 
-#include <HUDL/HUDL.hpp>
+#include <HUDL.hpp>
 
 namespace IO = EVT::core::IO;
 namespace DEV = EVT::core::DEV;

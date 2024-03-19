@@ -9,7 +9,7 @@
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/SPI.hpp>
 #include <EVT/utils/log.hpp>
-#include <HUDL/HUDL.hpp>
+#include <HUDL.hpp>
 #include <cstdio>
 #include <cstring>
 

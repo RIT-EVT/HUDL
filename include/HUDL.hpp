@@ -6,7 +6,7 @@
 #include <EVT/io/CANopen.hpp>
 #include <EVT/io/GPIO.hpp>
 #include <EVT/io/SPI.hpp>
-#include <HUDL/HUDL.hpp>
+#include <HUDL.hpp>
 
 #define REFRESH_RATE 16128
 
