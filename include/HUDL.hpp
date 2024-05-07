@@ -195,7 +195,7 @@ private:
 
         DATA_LINK_START_KEY_21XX(1, 3),
         DATA_LINK_21XX(1, 1, CO_TUNSIGNED16, &statusWord),    // Status Word
-        DATA_LINK_21XX(1, 2, CO_TUNSIGNED16, &actualPosition),// Actual Position
+        DATA_LINK_21XX(1, 2, CO_TSIGNED16, &actualPosition),// Actual Position
         DATA_LINK_21XX(1, 3, CO_TUNSIGNED16, &torqueActual),  // Torque Actual
 
         DATA_LINK_START_KEY_21XX(2, 2),

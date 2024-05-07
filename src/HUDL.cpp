@@ -65,7 +65,7 @@ void HUDL::updateLCD() {
     }
 
     char temp[9];
-    std::sprintf(temp, "%hu.%hu C", highestTemp / 10, highestTemp % 10);
+    std::sprintf(temp, "%hu.%hu C", highestTemp / 100, highestTemp % 100);
     dataForCorner(TOP_RIGHT, temp);
 
     // Set the rpm
