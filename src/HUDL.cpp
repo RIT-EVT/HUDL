@@ -46,7 +46,7 @@ void HUDL::updateLCD() {
         lcd.clearLCD();
         headerForCorner(TOP_LEFT, "Bat %");
         headerForCorner(TOP_RIGHT, "Temp");
-        headerForCorner(BOTTOM_LEFT, "RPM");
+        headerForCorner(BOTTOM_LEFT, "MPH");
         headerForCorner(BOTTOM_RIGHT, "MC Stat");
         setHeaders = true;
     }
@@ -70,7 +70,12 @@ void HUDL::updateLCD() {
 
     // Set the rpm
     char rpm[8];
-    std::sprintf(rpm, "%d", actualPosition);
+    float rpmToMphRatio = 0.0148946657603435;
+    float mph = actualPosition * rpmToMphRatio;
+    int mphWhole = static_cast<int>(mph); // Get the whole number part
+    int mphDecimal = static_cast<int>((mph - mphWhole) * 100); // Get the decimal part
+
+    std::sprintf(rpm, "%d.%d", mphWhole, mphDecimal);
     dataForCorner(BOTTOM_LEFT, rpm);
 
     // Set the motor controller status word
