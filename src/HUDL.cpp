@@ -13,6 +13,8 @@
 #include <cstdio>
 #include <cstring>
 
+#define DEV_1_RPM_MPH_RATIO 0.0148946657603435
+
 // clang-format on
 
 namespace IO = EVT::core::IO;
@@ -70,8 +72,7 @@ void HUDL::updateLCD() {
 
     // Set the rpm
     char rpm[8];
-    float rpmToMphRatio = 0.0148946657603435;
-    float mph = actualPosition * rpmToMphRatio;
+    float mph = actualPosition * DEV_1_RPM_MPH_RATIO;
     int mphWhole = static_cast<int>(mph); // Get the whole number part
     int mphDecimal = static_cast<int>((mph - mphWhole) * 100); // Get the decimal part
 
