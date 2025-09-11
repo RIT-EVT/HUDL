@@ -46,51 +46,41 @@ uint8_t HUDL::getNodeID() {
 void HUDL::updateLCD() {
     if (!setHeaders) {
         lcd.clearLCD();
-        headerForCorner(TOP_LEFT, "Bat %");
-        headerForCorner(TOP_RIGHT, "Temp");
-        headerForCorner(BOTTOM_LEFT, "MPH");
-        headerForCorner(BOTTOM_RIGHT, "MC Stat");
+        headerForCorner(TOP_LEFT, "X");
+        headerForCorner(TOP_RIGHT, "Y");
+        headerForCorner(BOTTOM_LEFT, "Z");
+        headerForCorner(BOTTOM_RIGHT, "CAN?");
         setHeaders = true;
     }
 
     // Set the battery voltage
-    char voltage[9];
-    std::sprintf(voltage, "%hu.%hu v", totalVoltage / 10, totalVoltage % 10);
-    dataForCorner(TOP_LEFT, voltage);
+    char x[9];
+    std::sprintf(x, "%hu", vectorXValues[0] / 16);
+    dataForCorner(TOP_LEFT, x);
 
-    // Set the highest temp
-    uint16_t highestTemp = thermTemps[0];
-    for (uint16_t temp : thermTemps) {
-        if (temp > highestTemp) {
-            highestTemp = temp;
-        }
-    }
+    char y[9];
+    std::sprintf(y, "%hu", vectorYValues[1] / 16);
+    dataForCorner(TOP_RIGHT, y);
 
-    char temp[9];
-    std::sprintf(temp, "%hu.%hu C", highestTemp / 100, highestTemp % 100);
-    dataForCorner(TOP_RIGHT, temp);
+    char z[9];
+    std::sprintf(z, "%hu", vectorZValues[1]/ 16);
+    dataForCorner(BOTTOM_LEFT, z);
 
-    // Set the rpm
-    char rpm[8];
-    float mph = actualPosition * DEV_1_RPM_MPH_RATIO;
-    int mphWhole = static_cast<int>(mph); // Get the whole number part
-    int mphDecimal = static_cast<int>((mph - mphWhole) * 100); // Get the decimal part
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Euler Raw x: %d", (int16_t) vectorXValues[0] / 16);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Euler Raw y: %d", (int16_t) vectorYValues[0] / 16);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Euler Raw z: %d", (int16_t) vectorZValues[0] / 16);
 
-    std::sprintf(rpm, "%d.%d", mphWhole, mphDecimal);
-    dataForCorner(BOTTOM_LEFT, rpm);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Gyroscope Raw x: %d", (int16_t) vectorXValues[1] / 16);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Gyroscope Raw y: %d", (int16_t) vectorYValues[1] / 16);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Gyroscope Raw z: %d", (int16_t) vectorZValues[1] / 16);
 
-    // Set the motor controller status word
-    char status[8];
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Linear Acceleration Raw x: %d", (int16_t) vectorXValues[2] / 100);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Linear Acceleration Raw y: %d", (int16_t) vectorYValues[2] / 100);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Linear Acceleration Raw z: %d", (int16_t) vectorZValues[2] / 100);
 
-    if (statusWord == 0x21) {
-        std::sprintf(status, "STOP");
-    } else if (statusWord == 0x27) {
-        std::sprintf(status, "GO");
-    } else {
-        std::sprintf(status, "%x", statusWord);
-    }
-
-    dataForCorner(BOTTOM_RIGHT, status);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Accelerometer Raw x: %d", (int16_t) vectorXValues[3] / 100);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Accelerometer Raw y: %d", (int16_t) vectorYValues[3] / 100);
+    log::LOGGER.log(log::Logger::LogLevel::INFO, "Accelerometer Raw z: %d", (int16_t) vectorZValues[3] / 100);
 }
 
 void HUDL::headerForCorner(Corner corner, const char* text) {
