@@ -55,15 +55,15 @@ void HUDL::updateLCD() {
 
     // Set the battery voltage
     char x[9];
-    std::sprintf(x, "%hu", vectorXValues[0] / 16);
+    std::sprintf(x, "%hd", (int16_t)vectorXValues[1] / 16);
     dataForCorner(TOP_LEFT, x);
 
     char y[9];
-    std::sprintf(y, "%hu", vectorYValues[1] / 16);
+    std::sprintf(y, "%hd", (int16_t)vectorYValues[1] / 16);
     dataForCorner(TOP_RIGHT, y);
 
     char z[9];
-    std::sprintf(z, "%hu", vectorZValues[1]/ 16);
+    std::sprintf(z, "%hd", (int16_t)vectorZValues[1] / 16);
     dataForCorner(BOTTOM_LEFT, z);
 
     log::LOGGER.log(log::Logger::LogLevel::INFO, "Euler Raw x: %d", (int16_t) vectorXValues[0] / 16);

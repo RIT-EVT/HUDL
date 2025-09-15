@@ -53,7 +53,7 @@ int main() {
 
     IO::UART& uart = IO::getUART<IO::Pin::PB_9, IO::Pin::PB_8>(9600);
     log::LOGGER.setUART(&uart);
-    log::LOGGER.setLogLevel(log::Logger::LogLevel::INFO);
+    log::LOGGER.setLogLevel(log::Logger::LogLevel::DEBUG);
 
     // Initialize the timer
     DEV::Timerf3xx timer(TIM2, 160);
