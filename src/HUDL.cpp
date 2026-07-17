@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <cstring>
 
-#define DEV_1_RPM_MPH_RATIO 0.0148946657603435
+#define DEV_1_RPM_MPH_RATIO 0.0181127
 
 // clang-format on
 
